@@ -1,0 +1,45 @@
+<header class="flex-row js-bt ai-cn">
+<% if( user===undefined ) { %>
+    <div class="nav">
+        <div>
+            <img class="logo" src="/image/login/logo_steam.svg">
+        </div>
+        <div>
+            <button id="login-btn" class="btn">Login</button>
+        </div>
+    </div>
+<% }else{ %>
+    <div class="nav">
+        <div>
+            <img class="logo" src="/image/login/logo_steam.svg">
+        </div>
+        <div>
+            <button id="logout-btn" class="btn">Logout</button>
+        </div>
+    </div>
+<%}%>
+</header>
+
+<script>
+    var loginBtn = document.getElementById('login-btn');
+var logoutBtn = document.getElementById('logout-btn');
+
+if(logoutBtn==null){
+    loginBtn.addEventListener('click',loginFun);
+}else{
+    logoutBtn.addEventListener('click',logoutFun);
+}
+
+function loginFun(){
+    window.location.href = "/login";
+}
+
+function signupFun(){
+    window.location.href = "/signup";
+}
+
+function logoutFun(){
+    console.log('test');
+    window.location.href = "/logout";
+}
+</script>

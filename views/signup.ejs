@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/general.css">
+    <link rel="stylesheet" href="/styles/login.css">
+    <link rel="stylesheet" href="/styles/signup.css">
+<body>
+
+    <%- include('partials/header',({"user":user})); %>
+
+    <div class="main-container signup-main">
+            <div class=" flex-column inner-container">
+                <h1 class="signup-title">CREATE YOUR ACCOUNT</h1>
+                <div>
+                    <p class="login-text">Email Address</p>
+                    <input class="input-form" type="email" name="email" id="email" pattern=".+@+.com" required autocomplete="off">
+                </div>
+                <div>
+                    <p class="login-text">Enter Name</p>
+                    <input class="input-form" type="text" name="name" id="name" required autocomplete="off">
+                </div>
+                <div>
+                    <p class="login-text">Enter User Name</p>
+                    <input class="input-form" type="text" name="userName" id="userName" required autocomplete="off">
+                </div>
+                <div>
+                    <p class="login-text">Enter Password</p>
+                    <input class="input-form" type="password" name="password" id="password1" required autocomplete="off">
+                </div>
+                <div>
+                    <p class="login-text">Confirm your Password</p>
+                    <input class="input-form" type="password" name="password2" id="password2" required autocomplete="off">
+                </div>
+                <div id="tos-container">
+                    <input id="tos-checkbox" type="checkbox"><p class="dark-text" id="term-of-service">I am 13 years of age or older and agree to the <a class="h-link-white-blue">terms of the Steam Subscriber Agreement</a> and the <a class="h-link-white-blue">Valve Privacy Policy</a>.</p>
+                </div>
+                <p id="err-msg">This is dummy text</p>
+                <button class="submit-btn submit" id="submit-btn-signup">Submit</button>
+            </div>
+    </div>
+</body>
+<script src="/javascript/signup.js" type="module"></script>
+</html>

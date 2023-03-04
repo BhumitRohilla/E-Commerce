@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/general.css">
+    <link rel="stylesheet" href="/styles/product.css">
+</head> 
+<body>
+    <%- include('partials/header',({"user":user})); %>
+    <div class="main-body">
+        <h1 id="title">FREE TO PLAY GAMES</h1>
+        <div id="featured-game-div">
+            <h3 id="featured-game-title">Featured Game</h3>
+            <div id="featured-game">
+                <img class="game-img" src="/image/product/header.jpg">
+                <div class="game-info">
+                    <div class="background-img-cover">
+                    </div>
+                    <div class="game-title-text">
+                        <h4>Goose Goose Duck</h4>
+                        <p>Oct 4, 2021</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="item-container" class="flex-column">
+            <h4>Game List</h4>
+            <% data.forEach((item)=>{ %>
+                <%- include('partials/item',({"item":item})); %>
+            <%})%>
+            <button id="show-more">Show More</button>
+        </div>
+    </div>
+    <div>
+    </div>
+    <footer>
+
+    </footer>
+</body>
+<script src="/javascript/product.js" type="module"></script>
+</html>

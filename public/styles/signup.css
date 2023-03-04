@@ -1,0 +1,38 @@
+.signup-main{
+    background-image: url(/image/login/acct_creation_bg.jpg);
+    height: fit-content;
+    min-height: calc(100vh - 58px);
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 20px;
+}
+.signup-title{
+    color: white;
+    text-align: left;
+    margin: 20px 0px;
+    font-family: malvo-font-thin;
+    font-weight: 200;
+}
+
+.main-container{
+    gap:20px;
+}
+#term-of-service{
+    display: inline;
+    font-size: 14px;
+}
+#tos-checkbox{
+    margin-right: 10px;
+}
+
+.inner-container{
+    gap:20px;
+}
+
+.submit-btn{
+    width: 100%;
+}
+
+#submit-btn-signup{
+    margin-top:5px;
+}

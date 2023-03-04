@@ -1,0 +1,163 @@
+
+.container{
+    background-color: #1b1b22;
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    width: 500px;
+}
+
+
+.login-text{
+    font-size: 13px;
+    color: #c6c6c6;
+    margin:5px;
+}
+
+.main-container{
+    width: 100%; 
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    box-sizing: border-box;
+    padding: 20px 0;
+    align-items: center;
+    background-position: center;
+    height: 100%;
+}
+.login-main{
+    background-image: url(/image/login/new_login_bg_strong_mask.jpg);
+    min-height: calc(100vh - 356px);
+}
+.join-btn{
+    border: none;
+}
+
+.footer{
+    background-color: #181a21;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:  80px 0px;
+}
+#footer-img{
+    display: block;
+    width: 200px;
+}
+.text-div{
+    font-size: 14px;
+    width: 200px;
+    height: 70px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.btn-cluster{
+    width: 200px;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    height: 70px;
+    align-items: center;
+    justify-content: space-around;
+}
+#join-btn{
+    border: none;
+    background-color: transparent;
+    color: white;
+    border: 1px solid #9a9999;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+
+#join-btn:hover{
+    border: 1px solid white;
+}
+
+.form-container{
+    box-sizing: border-box;
+    flex-shrink: 0;
+    flex-grow: 0;
+    height: 340px;
+    width: 700px;
+    background-color: #171a21;
+    position: relative;
+    padding-top: 40px;
+    padding-left: 20px;
+    max-width: 95vw;
+}
+
+.form-img{
+    display: block;
+    position: absolute;
+    height: 200px;
+    top: 10px;
+    right: 10px;
+    box-shadow: 0px 0px 10px black;
+    border-radius: 10px;
+}
+
+.blue-text{
+    color: #1a80f4
+}
+
+
+
+
+
+
+
+
+#help-link{
+    color: #afafaf;
+    text-decoration:underline;
+    margin: 0 auto;
+}
+#help-link:hover{
+    color: rgb(194, 194, 194);
+}
+
+#inner-container{
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+
+
+@media only screen and (max-width:719px) {
+    body{
+        background-color: #000000;
+        overflow-x: hidden;
+        width: 100vw;
+    }
+    #title{
+        text-align: center;
+    }
+    .form-container{
+        background-color: transparent;
+        padding-left: 0px;
+    }
+    .form-img{
+        visibility: collapse;
+    }
+    .form-container{
+        width: fit-content;
+        
+    }
+    .footer{
+        height: auto;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap:10px;
+    }
+    .btn-cluster{
+        align-self: center;
+    }
+}

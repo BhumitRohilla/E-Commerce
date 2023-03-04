@@ -1,0 +1,151 @@
+<style>
+    .container{
+        background-image: linear-gradient(to left, #3f4854,#444b56);
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        padding: 5px;
+        color: #9fa3a8;
+        box-sizing: border-box;
+        max-height: 110px;
+        font-size: 1.7vw;
+        box-shadow: 0px 0px 6px rgba(16, 16, 16, 0.665);
+        border-radius: 4px;
+    }
+    .img-container{
+        box-sizing: border-box;
+        width: 22%;
+        height: 100%;
+    }
+    .img{
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+    }
+    .text-container{
+        padding: 4px;
+    }
+    .svg-window{
+        width: 1.3vw;
+    }
+    .title{
+        font-family: malvo-font-thin;
+        font-weight: 300;
+        color: white;
+    }
+    .tag{
+        background-color: #545c66;
+        box-sizing: border-box;
+        padding: 2px;
+        font-size: 1.6vw;
+        border-radius: 4px;
+    }
+    .text-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .container-hover:hover{
+        transform: scale(1.1);
+        background-image: linear-gradient(to top,#32353b, #3b3e45);
+    }
+    .Positive{
+        color: rgb(15, 192, 15);
+    }
+    .Mixed{
+        color: yellow;
+    }
+    .Bad{
+        color: red;
+    }
+
+    .onPressed{
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        position: fixed;
+        margin: auto auto;
+        overflow-y: scroll;
+        background-image: linear-gradient(to top,#32353b, #3b3e45);
+        z-index: 4;
+        transition: all 1s;
+        max-width: 700px;
+        width: 90%;
+        height: 700px;
+        max-height: 700px;
+    }
+
+    @media only screen and (min-width: 908px) {
+        .container{
+            font-size: 15px;
+        }
+        .tag{
+            font-size: 15px;
+        }
+        .svg-window{
+            width: 12px;
+        }
+    }
+    @media only screen and (max-width: 500px) {
+        .container-hover:hover{
+            transform: scale(1);
+        }
+    }
+</style>
+
+<div class="container container-hover" id="<%= item.id %>" onclick="showDetails( <%= item.id %> )">
+    <div style="display: flex;height: fit-content;">
+        <div class="img-container">
+            <img class="img" src="<%= item.img%>" alt="">
+        </div>
+        <div class="text-container">
+            <h3 class="title"><%= item.title %></h3>
+            <div>
+                <% item.tag.forEach((element)=>{ %>
+                <span class="tag"><%=  element %></span>
+                <% }); %>
+            </div>
+            <div style="display: flex; align-items: flex-end;gap: 3px">
+                <div> <%=item.date%></div>
+                <div>
+                    <svg class="svg-window" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" class="SVGIcon_Button SVGIcon_WindowsLogo" width="100%" height="100%" viewBox="0 0 128 128" enable-background="new 0 0 128 128"><rect fill="#FFFFFF" width="60.834" height="60.835"></rect><rect x="67.165" fill="#FFFFFF" width="60.835" height="60.835"></rect><rect y="67.164" fill="#FFFFFF" width="60.834" height="60.836"></rect><rect x="67.165" y="67.164" fill="#FFFFFF" width="60.835" height="60.836"></rect></svg>
+                </div>
+            </div>
+            <div><span class='<%= item.status%>'> <%= item.status %> </span><span>| <%= item.userReviews %> User Reviews</span></div>
+        </div>
+    </div>
+    <div class="about-game" style="visibility: collapse;overflow: hidden;">
+        <p  ><%=item["about-game"]%></p>
+    </div>
+</div>
+
+
+
+<script>
+    function showDetails(element){
+        let blur = document.createElement('div');
+        blur.classList.add('blur-back');
+        // document.body.classList.add("blur-back");
+        let previousData = element.innerHTML;
+        console.log(document.body);
+        document.body.append(blur);
+        document.body.style.overflow= "hidden";
+        console.log(element);
+        element = document.getElementById(element);
+        element.disabled ="true";
+        console.log(element);
+        element.classList.add('onPressed');
+        element.classList.remove('container-hover');
+        console.log(previousData);
+        element.style.pointerEvents = "none";
+        let img = element.getElementsByClassName('img-container')[0];
+        console.log(img);
+        let data = element.getElementsByClassName('text-container')[0];
+
+        img.style.width = '50%';
+        let aboutGame = element.getElementsByClassName('about-game')[0];
+        aboutGame.style.visibility='visible';
+        
+        let crossBtn = document.createElement('button');
+    }
+</script>
