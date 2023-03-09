@@ -1,5 +1,4 @@
 [
-
     {
         "id":"1",
         "title":"LIGHT OF ALARIYA",
@@ -7,7 +6,8 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
+        "img":"/image/product/light-of-alariya.jpg",
+        "stock":102,
         "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
@@ -17,8 +17,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"3",
@@ -27,8 +28,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"4",
@@ -37,8 +39,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"5",
@@ -47,8 +50,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"6",
@@ -57,8 +61,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"7",
@@ -67,8 +72,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"8",
@@ -77,8 +83,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"9",
@@ -87,8 +94,9 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
-        ,"about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+        "img":"/image/product/img-test.jpg",
+        "stock":102,
+        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
     },
     {
         "id":"10",
@@ -97,7 +105,7 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
+        "img":"/image/product/img-test.jpg","stock":102
     },
     {
         "id":"11",
@@ -106,7 +114,7 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
+        "img":"/image/product/img-test.jpg","stock":102
     },
     {
         "id":"12",
@@ -115,6 +123,6 @@
         "date":"MAR 1,2023",
         "status":"Positive",
         "userReviews":"10",
-        "img":"/image/product/img-test.jpg"
+        "img":"/image/product/img-test.jpg","stock":102
     }
 ]

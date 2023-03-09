@@ -28,10 +28,15 @@
     box-sizing: border-box;
     display: flex;
 }
-.nav button{
+
+.nav-btn-cluster{
     position: absolute;
-    top:10px;
-    right: 40px;
+    top: 10px;
+    right: 20px;
+}
+
+.nav button{
+
     border: none;
     padding: 2px 5px;
     background-color: transparent;
@@ -180,15 +185,15 @@
 }
 
 .blur-back{
+    overflow: scroll;
     position: fixed;
-    width: 101vw;
-    height: 110vh;
+    width: 100vw;
+    height: 100vh;
     filter: blur(100px);
     z-index: 2;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
-    overflow: scroll;
     box-sizing: border-box;
     background: radial-gradient(ellipse at top, #32353b, transparent), radial-gradient(ellipse at bottom, #32353b, transparent);
 }

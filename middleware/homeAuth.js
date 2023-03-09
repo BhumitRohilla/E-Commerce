@@ -1,5 +1,6 @@
 function homeAuth(req,res,next){
-    if(req.session.is_logged_in && req.session.isVarified){
+    console.log(req.session);
+    if(req.session.is_logged_in && req.session.user.isVarified){
         next();
     }else if(req.session.is_logged_in){
         res.statusCode = 401;

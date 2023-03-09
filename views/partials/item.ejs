@@ -60,6 +60,7 @@
     }
 
     .onPressed{
+        z-index: 400;
         top: 50%;
         left: 50%;
         transform: translate(-50%,-50%);
@@ -67,12 +68,10 @@
         margin: auto auto;
         overflow-y: scroll;
         background-image: linear-gradient(to top,#32353b, #3b3e45);
-        z-index: 4;
-        transition: all 1s;
         max-width: 700px;
         width: 90%;
         height: 700px;
-        max-height: 700px;
+        max-height: 500px;
     }
 
     @media only screen and (min-width: 908px) {
@@ -86,6 +85,23 @@
             width: 12px;
         }
     }
+
+    .buyButton{
+        background-image: linear-gradient(to right,rgb(96, 212, 107) 50%,rgb(79, 197, 91));
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .buyButton:hover{
+        background-image: linear-gradient(to right,rgb(128, 233, 138) 50%,rgb(112, 221, 123));
+    }
+
+    .buyButton:active{
+    
+        background-image: linear-gradient(to right,rgb(96, 212, 107) 50%,rgb(79, 197, 91));
+        outline: 2px solid rgb(96, 212, 107) ;
+    }
     @media only screen and (max-width: 500px) {
         .container-hover:hover{
             transform: scale(1);
@@ -93,7 +109,7 @@
     }
 </style>
 
-<div class="container container-hover" id="<%= item.id %>" onclick="showDetails( <%= item.id %> )">
+<div class="container container-hover" id="<%= item.id %>" onclick="showDetails( '<%= item.id %>' )">
     <div style="display: flex;height: fit-content;">
         <div class="img-container">
             <img class="img" src="<%= item.img%>" alt="">
@@ -120,32 +136,80 @@
 </div>
 
 
+<script >
 
-<script>
-    function showDetails(element){
-        let blur = document.createElement('div');
-        blur.classList.add('blur-back');
-        // document.body.classList.add("blur-back");
-        let previousData = element.innerHTML;
-        console.log(document.body);
-        document.body.append(blur);
-        document.body.style.overflow= "hidden";
-        console.log(element);
-        element = document.getElementById(element);
-        element.disabled ="true";
-        console.log(element);
-        element.classList.add('onPressed');
-        element.classList.remove('container-hover');
-        console.log(previousData);
-        element.style.pointerEvents = "none";
-        let img = element.getElementsByClassName('img-container')[0];
-        console.log(img);
-        let data = element.getElementsByClassName('text-container')[0];
 
-        img.style.width = '50%';
-        let aboutGame = element.getElementsByClassName('about-game')[0];
-        aboutGame.style.visibility='visible';
-        
-        let crossBtn = document.createElement('button');
-    }
+function showDetails(element){
+
+    //GET number of product present in cart here element is id
+    let request = new XMLHttpRequest;
+    let quantitySpan = document.createElement('span');
+    
+    quantitySpan.classList.add('quantitySpan');
+    quantitySpan.innerText = 0;
+
+    request.open("GET",`/getProductValue/${element}`);
+    request.send();
+    request.addEventListener('load',function(){
+        quantitySpan.innerText = request.response;
+    })
+
+
+    let blur = document.createElement('div');
+    blur.classList.add('blur-back');
+    document.body.appendChild(blur);
+    element = document.getElementById(element);
+    previousData = element.innerHTML;
+    console.log(element);
+    element.classList.add('onPressed');
+    element.classList.remove('container-hover');
+    element.setAttribute('onclick',`removeDetails(${element.id})`);
+    document.body.style.overflow= "hidden";
+    let img = element.getElementsByClassName('img-container')[0];
+    console.log(img);
+    let data = element.getElementsByClassName('text-container')[0];
+    img.style.width = '50%';
+    let aboutGame = element.getElementsByClassName('about-game')[0];
+    aboutGame.style.visibility='visible';
+    let button = document.createElement('buttton');
+    button.innerText = "BUY";
+    button.classList.add('submit-btn')
+    button.classList.add('buyButton');
+    button.appendChild(quantitySpan);
+    button.addEventListener('click',function(evt){
+        evt.stopPropagation();
+        buy(element,quantitySpan);
+    });
+    element.appendChild(button);
+    console.log(button);
+}
+
+function buy(element,quantitySpan){
+    console.log(element.id);
+    let request = new XMLHttpRequest;
+    request.open("GET",`/buyProduct/${element.id}`);
+    request.send();
+    request.addEventListener('load',function(){
+        if(request.status == 201 ){
+            quantitySpan.innerText = parseInt(quantitySpan.innerText) + 1;
+        }
+        if(request.status == 204){
+            alert('Out of stocks');
+        }
+    })
+}
+
+function removeDetails(element){
+    element = document.getElementById(element);
+    element.classList.add('container-hover');
+    element.classList.remove('onPressed');
+    element.setAttribute('onclick',`showDetails(${element.id})`)
+    let blur = document.getElementsByClassName('blur-back')[0];
+    blur.remove();
+    document.body.style.overflow = "initial";
+    element.innerHTML = previousData;
+    
+}
+
+
 </script>

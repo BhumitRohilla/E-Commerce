@@ -5,11 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/styles/general.css">
+    <link rel="stylesheet" href="/styles/forgetPassword.css">
 </head>
 <body>
-    <div>
-        <input type="text" name="email" id="email" placeholder="Enter you email" required>
-        <button id="submit">Submit</button>
+    <%- include('partials/header',({user:undefined})) %>
+    <div class="main-container">
+        <div class="container">
+            <h2 class="text">Forget Password</h2>
+            <p>Enter your email address</p>
+            <input class="input-form" type="text" name="email" id="email" placeholder="Enter you email" required>
+            <button class="submit-btn" id="submit">Send</button>
+        </div>
     </div>
 </body>
 <script src="/javascript/forgetPassword.js" type="module"></script>
