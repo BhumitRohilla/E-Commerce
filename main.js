@@ -8,10 +8,13 @@ const userAuth = require('./middleware/userAuth')
 const homeAuth = require('./middleware/homeAuth');
 const sendVerificationMail = require('./func/sendVerificationMail');
 const sendMail = require('./func/sendMail');
-
+const adminAuth = require('./middleware/adminAuth');
+const multer = require('multer');
+const upload = multer({'dest':'public/image/product/'});
 
 app.set('view engine','ejs');
 app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(session({
     secret: "bhumit rohilla",
@@ -36,7 +39,6 @@ client.connect()
 })
 
 app.get('/',(req,res)=>{
-    // console.log(req.session);
     if(req.session.user)
         res.render('root',{'user': req.session.user && req.session.user.userName});
     else{
@@ -87,7 +89,6 @@ app.route('/signup')
     let user={
         name,userName,password,email,isVarified: false,key: crypto.randomBytes(5).toString('hex'),passwordChange: null
     }
-    // console.log(user);
     insertUser(user)
     .then(function(data){
         if(data == 200){
@@ -117,7 +118,6 @@ async function checkUser(user){
 
 app.get('/verify/:key',(req,res)=>{
     let filter = {'key':req.params.key};
-    // console.log(filter);
     updateUser(filter,{"isVarified":true})
     .then(()=>{
         res.redirect('/login');
@@ -134,25 +134,24 @@ app.get('/logout',(req,res)=>{
 
 app.route('/product')
 .get(homeAuth,async (req,res)=>{
-    // console.log(req.session);
     // readFileStream('./product.json',function(data){
     //     res.render('product',({user:req.session.userName,"data":data}));
     // },req);
     req.session.index = 0;
     let data = await getProducts(0,5);
     req.session.index = data.length;
-    res.render('product',{user:req.session.userName,"data":data});
+    
+    res.render('product',{'user': req.session.user && req.session.user.userName,"data":data});
+    // res.render('product',{user:req.session.userName,"data":data});
 })
 
 async function getProducts(starting,number){
-    // console.log(number);
     return  await db.collection('product').find().skip(starting).limit(5).toArray()
 }
 
 app.get('/showMore',async (req,res)=>{
-    // console.log("index:",req.session.index);
     let skip = req.session.index;
-    // console.log("skip", skip);
+    
     let data = await getProducts( skip , 5);
     if( data == 0){
         res.statusCode = 403;
@@ -160,12 +159,9 @@ app.get('/showMore',async (req,res)=>{
         return ;
     }
     req.session.index = skip + data.length;
-    // console.log(data);
     res.render('partials/productMore',{user:req.session.userName,"data":data});
 
     // let data = getProducts(parseInt(req.session.index),5);
-    // console.log(data);
-    // console.log(data.length);
     // req.session.index += data.length;
     // res.send(data);
     // if(req.session.index && req.session.index == -1){
@@ -188,9 +184,6 @@ app.route('/changePassword')
     let {password} = req.body;
     let user = req.session.user;
 
-    // console.log(user);
-
-    // console.log(password,userName); 
  //TODO: Make a function for this
     db.collection('users').updateOne({"userName":user.userName,"email":user.email},{$set:{password}})
     .then(function(data){
@@ -204,7 +197,6 @@ app.route('/changePassword')
     .catch(function(err){
         console.log(err);
     })
-    // console.log(userName);
     // readFile('./userData.json',function(err,data){
     //     if(!err){
     //         data = JSON.parse(data);
@@ -238,18 +230,15 @@ app.route('/forgetPassword')
     try{
         let data = await getUser({email});
         if(data === null){
-            // console.log("null in the data");
             res.statusCode = 403;
             res.end();
             return ;
         }
         let changePasswordToken = crypto.randomBytes(6).toString('hex');
         data.passwordChange = changePasswordToken;
-        // console.log(changePasswordToken);
         updateUser({email},{"passwordChange":changePasswordToken})
         .then(()=>{
             data.passwordChange = changePasswordToken;
-            // console.log(data);
             sendMail(data,"Password Reset","Change Password",`<h1>Reset Password</h1><p>Use <a href="http://${process.env.HOSTNAME}:${process.env.PORT}/forgetPassword/change/${data.passwordChange}">THIS</a> link to reset password </p>`,function(){    
                 res.statusCode = 200;
                 res.send();
@@ -295,7 +284,6 @@ app.route('/forgetPassword')
 app.get('/getProductValue/:id',(req,res)=>{
     // res.send(req.params);
     let {id} = req.params;
-    console.log('getProduct',id);
     getQuantity(id,req.session.user.userName,function(data){
         res.statusCode = 200 ;
         res.setHeader('Content-Type','plain/text');
@@ -306,7 +294,6 @@ app.get('/getProductValue/:id',(req,res)=>{
 async function updateUser(filter,output){
     return db.collection('users').updateOne(filter,{$set:output})
     .then(function(data){
-        // console.log("Verified");
         return data;
     })
     .catch(function(err){
@@ -316,12 +303,23 @@ async function updateUser(filter,output){
 
 app.get('/buyProduct/:pid',async (req,res)=>{
     let {pid} = req.params;
-    console.log(pid);
     let stockLeft = await getProductStock(pid);
-    console.log(stockLeft);
     if(stockLeft > 0){
         res.statusCode = 201;
-        addToCart(pid,req.session.userName);
+        addToCart(pid,req.session.user.userName);
+    }else{
+        res.statusCode = 204;
+    }
+    res.send();
+})
+
+app.get('/removeProduct/:pid',async (req,res)=>{
+    let {pid} = req.params;
+    let quantity = await quantityElement(req.session.user.userName,pid);
+    console.log(quantity);
+    if(quantity > 0){
+        res.statusCode = 201;
+        removeFromCart(pid,req.session.user.userName);
     }else{
         res.statusCode = 204;
     }
@@ -330,17 +328,14 @@ app.get('/buyProduct/:pid',async (req,res)=>{
 
 app.route('/myCart')
 .get(homeAuth,async (req,res)=>{
-    // console.log(req.session.user);
-    let cart = await getUserCart(req.session.user);
-    // console.log
-    // res.render();
+    let cart = await getUserCart(req.session.user.userName);
+    let cartItem = await getUserCartItem(cart); 
+    res.render('cart',({"userName":req.session.user.userName,"items":cartItem}));
 })
 
 app.get("/forgetPassword/change/:key",async (req,res)=>{
     let {key} = req.params;
     let user = await getUser({'passwordChange':key});
-    
-    // console.log(user);
 
     if(user != null){
         req.session.is_logged_in = true;
@@ -358,7 +353,6 @@ app.get("/forgetPassword/change/:key",async (req,res)=>{
     //             }
     //         })
     //         if(user!=null){
-    //             console.log(user.userName);
     //             req.session.userName = user.userName;
     //             req.session.is_logged_in = true;
     //             req.session.isVarified = true;
@@ -366,6 +360,35 @@ app.get("/forgetPassword/change/:key",async (req,res)=>{
     //         }
     //     }
     // })
+})
+
+app.route('/adminDashboard')
+.get(adminAuth,(req,res)=>{
+    let err = req.session.err;
+    if(err!=undefined){
+        delete req.session.err;
+    }
+    res.render('adminDashboard',{"userName":req.session.user.userName,"err":err});  
+})
+
+app.post('/addNewProduct', upload.single("product-img")  ,(req,res)=>{
+    console.log(req.body);
+    let obj = {};
+    
+    if(req.file.size > 25600){
+        req.session.err = "File is larger then 250kb";
+        console.log("File is large");
+    }
+    else{
+        let {title,tags,date,status,userReviews,price,stock,about} = req.body;
+        obj = {title,tags,date,status,userReviews,price,stock,about};
+        obj.imgSrc = req.file.filename;
+        console.log(req.file);
+        addProduct(obj);
+    }
+    
+    res.redirect('/adminDashboard');
+
 })
 
 app.get('*',(req,res)=>{
@@ -433,9 +456,7 @@ function display(data,callback){
     if(data[data.length-1]!=']'){
         data+=']';
     }
-    // console.log(data);
     data = JSON.parse(data);
-    // console.log(data);
     callback(data);
 }
 app.listen(process.env.PORT,process.env.HOSTNAME,function(){
@@ -454,9 +475,10 @@ async function getUser(user){
 }
 
 
-async function getUserCart(user){
+async function getUserCart(userName){
     // console.log(user);
-
+    //TODO: Remove db dependency from here;
+    return db.collection('cart').findOne({"userName":userName});
 }
 
 async function insertUser(user){
@@ -465,9 +487,6 @@ async function insertUser(user){
     let oldUser = {userName,email}
     
     oldUser = await checkUser(oldUser);
-
-    // console.log(oldUser);
-
     if(oldUser.length != 0){
         throw 401;
     }
@@ -513,13 +532,21 @@ async function insertUser(user){
     // })
 }
 
-function addToCart(pid, userName){
-    console.log
+async function addToCart(pid, userName){
+    //TODO: Move this into a function remove dependence on database; 
+    let userCart = await db.collection('cart').findOne({"userName":userName});
+    try{
+        userCart.product[pid].quantity++;
+    }
+    catch(err){
+        console.log(err);
+        userCart.product[pid] = {};
+        userCart.product[pid].quantity = 1;
+    }
+    db.collection('cart').updateOne({"userName":userName},{$set:{"product":userCart.product}});
 }
 
 function getQuantity(pid,userName,callback){
-    console.log(userName);
-    console.log(pid);
     fs.readFile('./cart.json',function(err,data){
         if(err){
             console.log(err);
@@ -543,6 +570,7 @@ function getQuantity(pid,userName,callback){
 }
 
 async function getProductStock(pid){
+    //TODO: Add it In another function remove dependecy on function; 
     let element = await db.collection('product').findOne({"id":pid});
     let stock = element.stock;
     if(stock == 0){
@@ -556,4 +584,51 @@ async function getProductStock(pid){
         }
         return stock;
     }
+}
+
+async function getUserCartItem(cart){
+    let allItems = await getAllProduct();
+    let obj = {};
+    for(key in cart.product){
+        obj[key] = allItems[key];
+        obj[key].quantity = cart.product[key].quantity;
+    }
+
+    return obj;
+}
+
+async function getAllProduct(){
+    //TODO: remote dependency;
+    let data = await db.collection('product').find().toArray();
+    let obj ={};
+    data =  data.forEach((element)=>{
+        obj[element.id] = element;
+    })
+    return obj;
+}
+
+async function removeFromCart(pid, userName){
+    //TODO: Move this into a function remove dependence on database; 
+    let userCart = await db.collection('cart').findOne({"userName":userName});
+    try{
+        if(userCart.product[pid].quantity > 0){
+            userCart.product[pid].quantity--;
+        }
+    }
+    catch(err){
+        console.log(err);
+        userCart.product[pid] = {};
+        userCart.product[pid].quantity = 1;
+    }
+    db.collection('cart').updateOne({"userName":userName},{$set:{"product":userCart.product}});
+    let data = await db.collection('product').findOne({'id':pid});
+    data.stock++;
+    db.collection('product').updateOne({'id':pid},{$set:{"stock":data.stock}});
+}
+
+
+async function quantityElement(userName,pid){
+    //TODO: move it into function
+    let cart = await db.collection('cart').findOne({'userName':userName});
+    return cart.product[pid].quantity;
 }

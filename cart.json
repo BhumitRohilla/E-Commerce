@@ -1,8 +1,12 @@
 [
     {
-        "bhumit":{
+        "userName" :"bhumit",
+        "product": {
             "1":{
                 "quantity":100
+            },
+            "2":{
+                "quantity":40
             }
         }
     }

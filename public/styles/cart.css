@@ -1,0 +1,18 @@
+body{
+    background-color: #0e1014;
+}
+
+.main-container{
+    background-color: red;
+    max-width: 908px;
+    width: 100%;
+    height: fit-content;
+    margin: auto;
+    margin-top: 80px;
+}
+
+.grid-container{
+    display: grid;
+    width: 100%;
+    box-sizing: border-box;
+}

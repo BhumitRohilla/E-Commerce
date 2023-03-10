@@ -1,0 +1,11 @@
+<div id="<%=item.id%>" class='inner-item-container'>
+    <h2 class="item-title"><%= item.title %></h2>
+    <div class="item-img-container">
+        <img class="item-img" src="<%=item.img %>">
+    </div>
+    <div class="footer-cluster">
+            <button onclick="increaseQuantity('<%=item.id%>')" class="item-plus">+</button>
+            <button onclick="decreaseQuantity('<%=item.id%>')" class="item-minus">-</button>
+        <span class="item-quantity"><%=item.quantity %></span>
+    </div>
+</div>
