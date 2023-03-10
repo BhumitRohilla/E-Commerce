@@ -27,7 +27,7 @@ function decreaseQuantity(id){
             quantitySpan.innerText = parseInt(quantitySpan.innerText) - 1;
         }
         if(request.status == 204){
-            alert('No Quantity To Decrease');
+            
         }
     })
 }

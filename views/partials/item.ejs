@@ -21,6 +21,7 @@
         box-sizing: border-box;
         display: block;
         width: 100%;
+        aspect-ratio: 12/6;
     }
     .text-container{
         padding: 4px;
@@ -140,21 +141,21 @@
 
 
 function showDetails(element){
-
+    
     //GET number of product present in cart here element is id
     let request = new XMLHttpRequest;
     let quantitySpan = document.createElement('span');
     
     quantitySpan.classList.add('quantitySpan');
     quantitySpan.innerText = 0;
-
+    
     request.open("GET",`/getProductValue/${element}`);
     request.send();
     request.addEventListener('load',function(){
         quantitySpan.innerText = request.response;
     })
-
-
+    
+    
     let blur = document.createElement('div');
     blur.classList.add('blur-back');
     document.body.appendChild(blur);
@@ -163,7 +164,7 @@ function showDetails(element){
     console.log(element);
     element.classList.add('onPressed');
     element.classList.remove('container-hover');
-    element.setAttribute('onclick',`removeDetails(${element.id})`);
+    element.setAttribute('onclick',`removeDetails('${element.id}')`);
     document.body.style.overflow= "hidden";
     let img = element.getElementsByClassName('img-container')[0];
     console.log(img);
@@ -200,10 +201,11 @@ function buy(element,quantitySpan){
 }
 
 function removeDetails(element){
+    console.log(element);
     element = document.getElementById(element);
     element.classList.add('container-hover');
     element.classList.remove('onPressed');
-    element.setAttribute('onclick',`showDetails(${element.id})`)
+    element.setAttribute('onclick',`showDetails('${element.id}')`)
     let blur = document.getElementsByClassName('blur-back')[0];
     blur.remove();
     document.body.style.overflow = "initial";

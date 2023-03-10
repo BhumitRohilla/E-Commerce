@@ -11,25 +11,17 @@
 <body>
     <%- include('partials/header',({"user":userName})); %>
     <div class="main-container">
-        <div class="container">
-            <% if(err !== undefined){ %>
-                <h5 style="color:red; background-color: black;" id="err"><%= err %></h5>
-            <% } %>
-            <h1>New Product</h1>
-            <form action="/addNewProduct" method="POST" id="new-product-form" enctype="multipart/form-data">
-                <input class="input-form" type="text" name="title" id="title" placeholder="Enter Title" title="Title">
-                <input class="input-form" type="text" name="tags" id="tags" placeholder="Enter Tags with space to create array" title="Tags"> 
-                <input class="input-form" type="date" name="date" id="date">
-                <input class="input-form" type="text" name="status" id="status" placeholder="Enter Prodcut status" title="Enter Status of game">
-                <input class="input-form" type="number" pattern="[0-9]" placeholder="Enter number of rating" title="Number of ratings" name="userReviews" id="userReviews" >
-                <input class="input-form" type="number" pattern="[0-9]" placeholder="Enter Price of the game" title="Price Of Game" name="price" id="price">
-                <input class="input-form" type="text" name="stock" id="stock" placeholder="Enter Product Quantity" title="Stocks">
-                <input class="input-form" type="text" name="about" id="about" placeholder="Enter description About Game" title="About Game">
-                <label>Enter Cover Photo</label><input type="file" name="product-img" id="product-img" accept="image/jpeg , image/png , image/jpg" >
-                <input class="submit submit-btn" type="submit" value="Save Product" id="submit-btn">
-            </form>
+        <% if(err == undefined){ %>
+            <h5 style="color:red; background-color: black;text-align: center;" id="err"><%= err %></h5>
+        <% } %>
+        
+        <div class="product-container">
+
         </div>
-        <div class="product-container"></div>
+    </div>
+    <div id="addNewProduct" onclick="newProductPage()">
+        <div id="buttonline vertical"></div>
+        <div id="buttonline horizontal"></div>
     </div>
 </body>
 <script src="/javascript/adminDashboard.js"></script>

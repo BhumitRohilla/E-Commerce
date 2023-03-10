@@ -11,6 +11,7 @@ const sendMail = require('./func/sendMail');
 const adminAuth = require('./middleware/adminAuth');
 const multer = require('multer');
 const upload = multer({'dest':'public/image/product/'});
+const path = require('path');
 
 app.set('view engine','ejs');
 app.use(express.static('public'));
@@ -281,14 +282,19 @@ app.route('/forgetPassword')
     // })
 })
 
-app.get('/getProductValue/:id',(req,res)=>{
+app.get('/getProductValue/:id',async (req,res)=>{
     // res.send(req.params);
     let {id} = req.params;
-    getQuantity(id,req.session.user.userName,function(data){
-        res.statusCode = 200 ;
-        res.setHeader('Content-Type','plain/text');
-        res.send(data.toString());
-    });
+    // getQuantity(id,req.session.user.userName,function(data){
+    //     res.statusCode = 200 ;
+    //     res.setHeader('Content-Type','plain/text');
+    //     res.send(data.toString());
+    // });
+    //TODO: Error Handleing;
+    let quantity = await getQuantity(id,req.session.user.userName);
+    res.statusCode = 200;
+    res.setHeader("Content-Type",'plain/text');
+    res.send(quantity.toString());
 })
 
 async function updateUser(filter,output){
@@ -317,7 +323,7 @@ app.get('/removeProduct/:pid',async (req,res)=>{
     let {pid} = req.params;
     let quantity = await quantityElement(req.session.user.userName,pid);
     console.log(quantity);
-    if(quantity > 0){
+    if(quantity > 1){
         res.statusCode = 201;
         removeFromCart(pid,req.session.user.userName);
     }else{
@@ -371,23 +377,35 @@ app.route('/adminDashboard')
     res.render('adminDashboard',{"userName":req.session.user.userName,"err":err});  
 })
 
-app.post('/addNewProduct', upload.single("product-img")  ,(req,res)=>{
+
+app.route('/addNewProduct')
+.get(adminAuth,(req,res)=>{
+    res.render('newProductPage');
+})
+.post(upload.single("product-img")  ,async (req,res)=>{
     console.log(req.body);
     let obj = {};
     
-    if(req.file.size > 25600){
-        req.session.err = "File is larger then 250kb";
+    if(req.file.size > 256000){
         console.log("File is large");
+        res.statusCode = 402;
     }
     else{
-        let {title,tags,date,status,userReviews,price,stock,about} = req.body;
-        obj = {title,tags,date,status,userReviews,price,stock,about};
+        let {title,tags,date,status,userReviews,stock,about} = req.body;
+        obj = {title,tags,date,status,userReviews,stock,about};
         obj.imgSrc = req.file.filename;
         console.log(req.file);
-        addProduct(obj);
+        try{
+            await addProduct(obj);
+            res.statusCode = 200;
+        }
+        catch(err){
+            console.log(err);
+            res.statusCode = 404;
+        }
     }
-    
-    res.redirect('/adminDashboard');
+    res.setHeader('Content-Type','plain/text');
+    res.send();
 
 })
 
@@ -539,35 +557,68 @@ async function addToCart(pid, userName){
         userCart.product[pid].quantity++;
     }
     catch(err){
+        console.log(userCart);
+        let userExist = true;
+        if(userCart == null){
+            userCart = {
+                userName,
+                product : {}
+            }
+            userExist = false;
+        }
         console.log(err);
         userCart.product[pid] = {};
         userCart.product[pid].quantity = 1;
+        if(!userExist){
+            db.collection('cart').insertOne(userCart);
+            return ;
+        }
     }
     db.collection('cart').updateOne({"userName":userName},{$set:{"product":userCart.product}});
 }
 
-function getQuantity(pid,userName,callback){
-    fs.readFile('./cart.json',function(err,data){
-        if(err){
+async function getQuantity(pid,userName){
+    // TODO(DB): Remove This Dependency
+    let data = await db.collection('cart').findOne({userName});
+    let quantity;
+    if(data == null){
+        quantity = 0;
+    }else{
+        console.log(data);
+        try{
+            quantity = data.product[pid].quantity;
+            console.log(quantity);
+        }
+        catch(err){
             console.log(err);
-        }else{
-            data = JSON.parse(data);
-            try{
-                let quantity = data[userName][pid].quantity;
-                if(quantity == undefined){
-                    quantity = 0;
-                }
-                callback(quantity);
-            }
-            catch(err){
-                console.log(err);
-                callback(0);
-            }
+            quantity =  0;
+        }
+    }
+    return quantity;
+}
+
+// function getQuantity(pid,userName,callback){
+//     fs.readFile('./cart.json',function(err,data){
+//         if(err){
+//             console.log(err);
+//         }else{
+//             data = JSON.parse(data);
+//             try{
+//                 let quantity = data[userName][pid].quantity;
+//                 if(quantity == undefined){
+//                     quantity = 0;
+//                 }
+//                 callback(quantity);
+//             }
+//             catch(err){
+//                 console.log(err);
+//                 callback(0);
+//             }
             
 
-        }
-    })
-}
+//         }
+//     })
+// }
 
 async function getProductStock(pid){
     //TODO: Add it In another function remove dependecy on function; 
@@ -589,11 +640,12 @@ async function getProductStock(pid){
 async function getUserCartItem(cart){
     let allItems = await getAllProduct();
     let obj = {};
-    for(key in cart.product){
-        obj[key] = allItems[key];
-        obj[key].quantity = cart.product[key].quantity;
+    if(cart != null){
+        for(key in cart.product){
+            obj[key] = allItems[key];
+            obj[key].quantity = cart.product[key].quantity;
+        }
     }
-
     return obj;
 }
 
@@ -631,4 +683,22 @@ async function quantityElement(userName,pid){
     //TODO: move it into function
     let cart = await db.collection('cart').findOne({'userName':userName});
     return cart.product[pid].quantity;
+}
+
+
+async function addProduct(obj){
+    //TODO: Remove This Dependency;
+    let finalObj = {}
+    finalObj.id = crypto.randomBytes(7).toString('hex');
+    finalObj.title = obj.title;
+    let tagArray = obj.tags.split(' ');
+    finalObj.date = obj.date;
+    finalObj.tag = tagArray;
+    finalObj.status = obj.status;
+    finalObj.userReviews = obj.userReviews;
+    finalObj.img = path.join('/image/product',obj.imgSrc);
+    finalObj.stock = obj.stock;
+    finalObj['about-game'] = obj.about;
+    console.log(finalObj);
+    return await db.collection('product').insertOne(finalObj)
 }

@@ -1,0 +1,17 @@
+<div class="container">
+    <h1><%=title%></h1>
+    <form action="<%=action%>" method="POST" id="<%=formId%>" enctype="multipart/form-data">
+        <input class="input-form" type="text" name="title" id="title" placeholder="Enter Title" title="Title" value="<%=prevTitle%>">
+        <input class="input-form" type="text" name="tags" id="tags" placeholder="Enter Tags with space to create array" title="Tags" value="<%=prevTags%>"> 
+        <input class="input-form" type="date" name="date" id="date" value="<%=prevDate%>">
+        <input class="input-form" type="text" name="status" id="status" placeholder="Enter Prodcut status" title="Enter Status of game" value="<%=prevStatus%>">
+        <input class="input-form" type="number" pattern="[0-9]" placeholder="Enter number of rating" title="Number of ratings" name="userReviews" id="userReviews" value="<%=prevRating%>" >
+        <input class="input-form" type="number" name="stock" id="stock" placeholder="Enter Product Quantity" title="Stocks" value=<%=prevStock%>>
+        <input class="input-form" type="text" name="about" id="about" placeholder="Enter description About Game" title="About Game" value="<%=about%>">
+        <label>Enter Cover Photo</label><input type="file" name="product-img" id="product-img" accept="image/jpeg , image/png , image/jpg" >
+        <input class="submit submit-btn" type="submit" value="Save Product" id="submit-btn">
+    </form>
+</div>
+
+<script src="/javascript/adminUpdate.js" type="module">
+</script>
