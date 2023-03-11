@@ -15,7 +15,7 @@
   "status": "Positive",
   "userReviews": "10",
   "img": "light-of-alariya.jpg",
-  "stock": 94,
+  "stock": 96,
   "about-game": "Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
 },{
   "_id": {
@@ -34,7 +34,7 @@
   "status": "Positive",
   "userReviews": "10",
   "img": "ogre-chambers-dx.jpg",
-  "stock": 44,
+  "stock": 54,
   "about-game": "Roguelike bullet hell shooter, where you fend off waves of attacking monsters in a constantly transforming arena. You are rewarded with upgrades to your vulnerable spaceship if you survive long enough"
 },{
   "_id": {
@@ -75,27 +75,6 @@
   "img": "counter-strike.jpg",
   "stock": 53,
   "about-game": "Counter-Strike: Global Offensive (CS: GO) expands upon the team-based action gameplay that it pioneered when it was launched 19 years ago. CS: GO features new maps, characters, weapons, and game modes, and delivers updated versions of the classic CS content (de_dust2, etc.). "
-},{
-  "_id": {
-    "$oid": "64097fd1dae30c9bc676da21"
-  },
-  "id": "5",
-  "title": "Halo: THe Master Chief Collection",
-  "tag": [
-    "Greate Soundtrack",
-    "FPS",
-    "Classic",
-    "Multiplayer",
-    "Story Rich",
-    "Sci-fi",
-    "First-Person"
-  ],
-  "date": "DEC 3,2019",
-  "status": "Very Positive",
-  "userReviews": "183433",
-  "img": "halo.jpg",
-  "stock": 20,
-  "about-game": "The Master Chief’s iconic journey includes six games, built for PC and collected in a single integrated experience. Whether you’re a long-time fan or meeting Spartan 117 for the first time, The Master Chief Collection is the definitive Halo gaming experience."
 },{
   "_id": {
     "$oid": "64097fd1dae30c9bc676da22"
@@ -193,7 +172,7 @@
   "status": "Positive",
   "userReviews": "67214",
   "img": "god-of-war.png",
-  "stock": 70,
+  "stock": 75,
   "about-game": "His vengeance against the Gods of Olympus years behind him, Kratos now lives as a man in the realm of Norse Gods and monsters. It is in this harsh, unforgiving world that he must fight to survive… and teach his son to do the same. "
 },{
   "_id": {
@@ -214,4 +193,25 @@
   "userReviews": "469056",
   "img": "elden-ring.png",
   "stock": 99
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da21"
+  },
+  "id": "5",
+  "title": "Halo: THe Master Chief Collection",
+  "tag": [
+    "Greate Soundtrack",
+    "FPS",
+    "Classic",
+    "Multiplayer",
+    "Story Rich",
+    "Sci-fi",
+    "First-Person"
+  ],
+  "date": "DEC 3,2019",
+  "status": "Very Positive",
+  "userReviews": "183433",
+  "img": "halo.jpg",
+  "stock": 20,
+  "about-game": "The Master Chief’s iconic journey includes six games, built for PC and collected in a single integrated experience. Whether you’re a long-time fan or meeting Spartan 117 for the first time, The Master Chief Collection is the definitive Halo gaming experience."
 }]

@@ -12,6 +12,9 @@ const adminAuth = require('./middleware/adminAuth');
 const multer = require('multer');
 const upload = multer({'dest':'public/image/product/'});
 const path = require('path');
+const {MongoClient} = require('mongodb');
+const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc')
+
 
 app.set('view engine','ejs');
 app.use(express.static('public'));
@@ -24,8 +27,7 @@ app.use(session({
 }))
 
 
-
-const {MongoClient} = require('mongodb');
+//TODO: What to do?
 const client = new MongoClient(process.env.MONGO);
 const databaseName = 'e-comm';
 let db =null;
@@ -39,9 +41,11 @@ client.connect()
     console.log(err);
 })
 
+
 app.get('/',(req,res)=>{
+    //TODO: Home Page
     if(req.session.user)
-        res.render('root',{'user': req.session.user && req.session.user.userName});
+    res.render('root',{'user': req.session.user && req.session.user.userName});
     else{
         res.render('root',{'user': undefined});
     }
@@ -51,6 +55,8 @@ app.get('/home',homeAuth,(req,res)=>{
     res.redirect('product');
 });
 
+
+
 app.route('/login')
 .get(userAuth,(req,res)=>{
     res.render('login',{'user':req.session.is_logged_in});
@@ -58,7 +64,7 @@ app.route('/login')
 .post((req,res)=>{
     let userName = req.body.userValue;
     let password = req.body.pass;
-    getUser({userName,password})
+    getUser({userName,password},db)
     .then(function(data){
         if(data == null){
             res.statusCode = 401;
@@ -90,13 +96,19 @@ app.route('/signup')
     let user={
         name,userName,password,email,isVarified: false,key: crypto.randomBytes(5).toString('hex'),passwordChange: null
     }
-    insertUser(user)
+    insertUser(user,db)
     .then(function(data){
         if(data == 200){
-            sendVerificationMail(user,function(){
-                res.statusCode = 200;
-                res.setHeader('Content-Type','text/plain')
-                res.end();
+            sendVerificationMail(user,function(err){
+                if(!err){
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type','text/plain')
+                    res.end();
+                }else{
+                    res.statusCode = 303;
+                    res.setHeader('Content-Type','text/plain');
+                    res.end();
+                }
             });
         }
     })
@@ -107,26 +119,20 @@ app.route('/signup')
 })
 
 
-async function checkUser(user){
-    return db.collection('users').find(user).toArray()
-    .then(function(data){
-        return data;
-    })
-    .catch(function(err){
-        throw err;
-    })
-}
+
 
 app.get('/verify/:key',(req,res)=>{
     let filter = {'key':req.params.key};
-    updateUser(filter,{"isVarified":true})
+    updateUser(filter,{"isVarified":true},db)
     .then(()=>{
         res.redirect('/login');
     })
     .catch((err)=>{
-        console.log(err);
+        res.send("Error Occur");
     })
 })
+
+// * Done upto Hear
 
 app.get('/logout',(req,res)=>{
     req.session.destroy();
@@ -229,7 +235,7 @@ app.route('/forgetPassword')
 .post(async (req,res)=>{
     let {email} = req.body;
     try{
-        let data = await getUser({email});
+        let data = await getUser({email},db);
         if(data === null){
             res.statusCode = 403;
             res.end();
@@ -237,13 +243,17 @@ app.route('/forgetPassword')
         }
         let changePasswordToken = crypto.randomBytes(6).toString('hex');
         data.passwordChange = changePasswordToken;
-        updateUser({email},{"passwordChange":changePasswordToken})
+        updateUser({email},{"passwordChange":changePasswordToken},db)
         .then(()=>{
             data.passwordChange = changePasswordToken;
             sendMail(data,"Password Reset","Change Password",`<h1>Reset Password</h1><p>Use <a href="http://${process.env.HOSTNAME}:${process.env.PORT}/forgetPassword/change/${data.passwordChange}">THIS</a> link to reset password </p>`,function(){    
                 res.statusCode = 200;
                 res.send();
             });
+        })
+        .catch((err)=>{
+            res.statusCode = 404;
+            res.send();
         })
     }
     catch(err){
@@ -297,15 +307,6 @@ app.get('/getProductValue/:id',async (req,res)=>{
     res.send(quantity.toString());
 })
 
-async function updateUser(filter,output){
-    return db.collection('users').updateOne(filter,{$set:output})
-    .then(function(data){
-        return data;
-    })
-    .catch(function(err){
-        console.log(err)
-    })
-}
 
 app.get('/buyProduct/:pid',async (req,res)=>{
     let {pid} = req.params;
@@ -341,7 +342,7 @@ app.route('/myCart')
 
 app.get("/forgetPassword/change/:key",async (req,res)=>{
     let {key} = req.params;
-    let user = await getUser({'passwordChange':key});
+    let user = await getUser({'passwordChange':key},db);
 
     if(user != null){
         req.session.is_logged_in = true;
@@ -579,16 +580,6 @@ app.listen(process.env.PORT,process.env.HOSTNAME,function(){
 });
 
 
-async function getUser(user){
-    return db.collection('users').findOne(user)
-   .then(function(data){
-        return data;
-   })
-   .catch(function(err){
-        throw err;
-   })
-}
-
 
 async function getUserCart(userName){
     // console.log(user);
@@ -596,56 +587,7 @@ async function getUserCart(userName){
     return db.collection('cart').findOne({"userName":userName});
 }
 
-async function insertUser(user){
-    let userName = user.userName;
-    let email = user.email;
-    let oldUser = {userName,email}
-    
-    oldUser = await checkUser(oldUser);
-    if(oldUser.length != 0){
-        throw 401;
-    }
 
-    return db.collection('users').insertOne(user)
-    .then(function(){
-        return 200;
-    })
-    .catch(function(){
-        return 404;
-    })
-    // readFile('./userData.json',function(err,data){
-    //     if(!err){
-    //         let users = [];
-    //         if( data.length > 1 && data[0]=='[' && data[data.length-1]==']'){
-    //             users = JSON.parse(data);
-    //         }
-    //         for(let i = 0 ;i <users.length;++i){
-    //             if(users[i].userName == userName){
-    //                 res.statusCode = 401;
-    //                 res.setHeader('Content-Type','text/plain')
-    //                 res.end();
-    //                 return ;
-    //             }
-    //         }
-    //         users.push(user);
-    //         writeFile('./userData.json',JSON.stringify(users),function(err){
-    //             if(!err){
-
-    //                 sendVerificationMail(user,function(){
-    //                     res.statusCode = 200;
-    //                     res.setHeader('Content-Type','text/plain')
-    //                     res.end();
-    //                 });
-    //                 return ;
-    //             }
-    //         })
-    //     }else{
-    //         res.statusCode = 404;
-    //         res.setHeader('Content-Type','text/plain')
-    //         res.end();
-    //     }
-    // })
-}
 
 async function addToCart(pid, userName){
     //TODO: Move this into a function remove dependence on database; 
@@ -807,3 +749,4 @@ async function addProduct(obj){
     console.log(finalObj);
     return await db.collection('product').insertOne(finalObj)
 }
+

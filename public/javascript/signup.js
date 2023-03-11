@@ -54,6 +54,9 @@ submitBtn.addEventListener('click',function(){
                 case 401:{
                     errThrough("UserName already Taken",4);
                 }
+                case 303:{
+                    errThrough("Email cant be sent",5);
+                }
             }
         })
         submitBtn.setAttribute("disabled","true");
@@ -96,6 +99,11 @@ function errThrough(error,cond){
         }
         case 4:{
             errMsg.innerText = error;
+            break;
+        }
+        case 5:{
+            errMsg.innerText = error;
+            break;
         }
     }
 
