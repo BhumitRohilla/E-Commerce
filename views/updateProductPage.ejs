@@ -9,6 +9,6 @@
     <link rel="stylesheet" href="/styles/admin.css">
 </head>
 <body style="height: 100vh;">
-    <%- include('partials/adminUpdate',({"title":"New Product","action":"/adminDashboard/addNewProduct","prevTitle":"","prevTags":"","prevDate":"","prevStatus":"","prevRating":"","prevStock":"","about":""})) %>
+    <%- include('partials/adminUpdate',({"title":"Update","action":`/adminDashboard/updateProduct/${item.id}`,"prevTitle":`${item.title}`,"prevTags":`${item.tag.join(" ")}`,"prevDate":`${item.date}`,"prevStatus":`${item.status}`,"prevRating":`${item.userReviews}`,"prevStock":`${item.stock}`,"about":`${item['about-game']}`})) %>
 </body>
 </html>

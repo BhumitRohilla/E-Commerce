@@ -1,128 +1,217 @@
-[
-    {
-        "id":"1",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/light-of-alariya.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"2",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"3",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"4",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"5",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"6",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"7",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"8",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"9",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg",
-        "stock":102,
-        "about-game":"Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
-    },
-    {
-        "id":"10",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg","stock":102
-    },
-    {
-        "id":"11",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg","stock":102
-    },
-    {
-        "id":"12",
-        "title":"LIGHT OF ALARIYA",
-        "tag":["Exploration","Puzzle Platformer","PRG","Puzzle","Sailing"],
-        "date":"MAR 1,2023",
-        "status":"Positive",
-        "userReviews":"10",
-        "img":"/image/product/img-test.jpg","stock":102
-    }
-]
+[{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da1d"
+  },
+  "id": "1",
+  "title": "LIGHT OF ALARIYA",
+  "tag": [
+    "Exploration",
+    "Puzzle Platformer",
+    "PRG",
+    "Puzzle",
+    "Sailing"
+  ],
+  "date": "MAR 1,2023",
+  "status": "Positive",
+  "userReviews": "10",
+  "img": "light-of-alariya.jpg",
+  "stock": 94,
+  "about-game": "Light of Alariya is an open-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da1e"
+  },
+  "id": "2",
+  "title": "Ogre Chambers DX",
+  "tag": [
+    "Action Roguelike",
+    "Bullet Hell",
+    "Roguelike",
+    "Sci-fi",
+    "Shoot 'Em Up"
+  ],
+  "date": "MAR 3,2023",
+  "status": "Positive",
+  "userReviews": "10",
+  "img": "ogre-chambers-dx.jpg",
+  "stock": 44,
+  "about-game": "Roguelike bullet hell shooter, where you fend off waves of attacking monsters in a constantly transforming arena. You are rewarded with upgrades to your vulnerable spaceship if you survive long enough"
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da1f"
+  },
+  "id": "3",
+  "title": "Elog Plug",
+  "tag": [
+    "Adventure",
+    "Comedy",
+    "3D Platformer ",
+    "Cute",
+    "Exploration"
+  ],
+  "date": "FEB 25,2023",
+  "status": "Very Positive",
+  "userReviews": "153",
+  "img": "elong-plug.jpg",
+  "stock": 20,
+  "about-game": "Play as an elastic plug trying to become as long as LORD ELON. Use your climbing, dangling, and stretching skills to collect coins and buy length upgrades. Will LORD ELON accept you? "
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da20"
+  },
+  "id": "4",
+  "title": "Counter Strike",
+  "tag": [
+    "FPS",
+    "Shooter",
+    "Multiplayer",
+    "Competitive",
+    "Action",
+    "Team-Based"
+  ],
+  "date": "AUG 21,2012",
+  "status": "Very Positive",
+  "userReviews": "699070",
+  "img": "counter-strike.jpg",
+  "stock": 53,
+  "about-game": "Counter-Strike: Global Offensive (CS: GO) expands upon the team-based action gameplay that it pioneered when it was launched 19 years ago. CS: GO features new maps, characters, weapons, and game modes, and delivers updated versions of the classic CS content (de_dust2, etc.). "
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da21"
+  },
+  "id": "5",
+  "title": "Halo: THe Master Chief Collection",
+  "tag": [
+    "Greate Soundtrack",
+    "FPS",
+    "Classic",
+    "Multiplayer",
+    "Story Rich",
+    "Sci-fi",
+    "First-Person"
+  ],
+  "date": "DEC 3,2019",
+  "status": "Very Positive",
+  "userReviews": "183433",
+  "img": "halo.jpg",
+  "stock": 20,
+  "about-game": "The Master Chief’s iconic journey includes six games, built for PC and collected in a single integrated experience. Whether you’re a long-time fan or meeting Spartan 117 for the first time, The Master Chief Collection is the definitive Halo gaming experience."
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da22"
+  },
+  "id": "6",
+  "title": "Red Dead Redemption 2",
+  "tag": [
+    "Open World",
+    "Story Rich",
+    "Adventure",
+    "Western",
+    "Action",
+    "Mltiplayer",
+    "Realistic"
+  ],
+  "date": "DEC 5,2019",
+  "status": "Positive",
+  "userReviews": "345091",
+  "img": "red-dead-redemption-2.jpg",
+  "stock": 102,
+  "about-game": "Winner of over 175 Game of the Year Awards and recipient of over 250 perfect scores, RDR2 is the epic tale of outlaw Arthur Morgan and the infamous Van der Linde gang, on the run across America at the dawn of the modern age. Also includes access to the shared living world of Red Dead Online. "
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da23"
+  },
+  "id": "7",
+  "title": "Call of Duty",
+  "tag": [
+    "FPS",
+    "World War 2",
+    "Action",
+    "Classic",
+    "Shooter"
+  ],
+  "date": "OCT 29,2003",
+  "status": "Positive",
+  "userReviews": "4328",
+  "img": "cod-1.jpg",
+  "stock": 95,
+  "about-game": "Call of Duty® delivers the gritty realism and cinematic intensity of World War II's epic battlefield moments like never before - through the eyes of citizen soldiers and unsung heroes from an alliance of countries who together helped shape the course of modern history.n-world, third-person, exploration puzzle game made by students at SMU Guildhall. In Light of Alariya, you traverse the ancient alien temples and ruins to restore the power of the stars and awaken your sleeping civilization."
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da24"
+  },
+  "id": "8",
+  "title": "Call of Duty WORLD AT WAR",
+  "tag": [
+    "Zombies",
+    "World War 2",
+    "FPS",
+    "Multiplayer",
+    "Action"
+  ],
+  "date": "NOV 18,2008",
+  "status": "Positive",
+  "userReviews": "37193",
+  "img": "call-of-duty-world-at-war.jpg",
+  "stock": 94,
+  "about-game": "\nCall of Duty is back, redefining war like you've never experienced before. Building on the Call of Duty 4®: Modern Warfare engine, Call of Duty: World at War immerses players into the most gritty and chaotic WWII combat ever experienced. "
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da25"
+  },
+  "id": "9",
+  "title": "CupHead",
+  "tag": [
+    "Difficult",
+    "Cartoon",
+    "Co-op",
+    "Platformer",
+    "Great Soundtrack",
+    "Hand-drawn",
+    "Multiplayer"
+  ],
+  "date": "SEP 29,2017",
+  "status": "Positive",
+  "userReviews": "117089",
+  "img": "cuphead.jpg",
+  "stock": 88,
+  "about-game": "Cuphead is a classic run and gun action game heavily focused on boss battles. Inspired by cartoons of the 1930s, the visuals and audio are painstakingly created with the same techniques of the era, i.e. traditional hand drawn cel animation, watercolor backgrounds, and original jazz recordings."
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da26"
+  },
+  "id": "10",
+  "title": "GOD OF WAR",
+  "tag": [
+    "Exploration",
+    "Puzzle Platformer",
+    "PRG",
+    "Puzzle",
+    "Sailing"
+  ],
+  "date": "MAR 1,2023",
+  "status": "Positive",
+  "userReviews": "67214",
+  "img": "god-of-war.png",
+  "stock": 70,
+  "about-game": "His vengeance against the Gods of Olympus years behind him, Kratos now lives as a man in the realm of Norse Gods and monsters. It is in this harsh, unforgiving world that he must fight to survive… and teach his son to do the same. "
+},{
+  "_id": {
+    "$oid": "64097fd1dae30c9bc676da27"
+  },
+  "id": "11",
+  "title": "ELDEAN RING",
+  "tag": [
+    "Souls-like",
+    "Dark Fantasy",
+    "RPG",
+    "Open World",
+    "Difficult",
+    "Fantasy"
+  ],
+  "date": "FEB 25,2022",
+  "status": "PVery ositive",
+  "userReviews": "469056",
+  "img": "elden-ring.png",
+  "stock": 99
+}]

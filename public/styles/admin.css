@@ -48,12 +48,12 @@ body{
     position: absolute;
 }
 #vertical{
-    height: 40px;
-    width: 10px;
+    height: 20px;
+    width: 5px;
 }
 #horizontal{
-    height: 10px;
-    width: 40px;
+    height: 5px;
+    width: 20px;
 }
 
 .table{
@@ -83,7 +83,9 @@ body{
     margin: auto;
     color: white;
     grid-template-columns: repeat(auto-fit,minmax(500px, 1fr) );
-    padding: 20px; 
+    padding: 20px;
+    justify-content: baseline;
+    align-items: end;
 }
 
 .admin-item-container{
@@ -112,4 +114,23 @@ body{
     border: none;
     height: 40px;
     flex: 1;
+}
+
+img{
+    width: 460px;
+    height: 219px;
+}
+
+@media screen  and (max-width: 530px){
+    .product-container{
+        grid-template-columns: auto;
+    }
+    .admin-item-container{
+        box-sizing: border-box;
+        width: 100%;
+    }
+    img{
+        width: 100%;
+        height: auto;
+    }
 }

@@ -1,7 +1,7 @@
 const form = document.getElementsByTagName("form")[0];
 const submitBtn = document.getElementById('submit-btn');
-
 //form values
+const url = form.getAttribute('action');
 const titleInput = document.getElementById('title');
 const tagInput  = document.getElementById('tags');
 const dateInput = document.getElementById('date');
@@ -24,10 +24,10 @@ submitBtn.addEventListener('click',function(evt){
     let stock = stockInput.value
     let about = aboutInput.value.trim();
     let img = imgInput.value.trim();
-    if(title == "" || tag == "" || date == "" || statusProduct == "" || userReviews == "" /*|| price == ""*/ || stock == "" || about == "" || img == ""){
+    if( url=="/adminDashboard/addNewProduct" && (title == "" || tag == "" || date == "" || statusProduct == "" || userReviews == "" /*|| price == ""*/ || stock == "" || about == "" || img == "")){
         alert("Please Enter All The Value");
         return ;
-    }else{
+    }else if(img!=""){
         let sizeOfImg = imgInput.files[0].size;
         if(sizeOfImg > 256000){
             alert("Image size should be below 250kb");
@@ -36,7 +36,7 @@ submitBtn.addEventListener('click',function(evt){
     }
     let data = new FormData(form);
     let request = new XMLHttpRequest;
-    request.open('POST','/addNewProduct');
+    request.open('POST',url);
     request.send(data);
     request.addEventListener('load',function(){
         switch(request.status){

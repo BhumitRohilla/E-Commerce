@@ -1,21 +1,40 @@
+var strWindowFeatures = "location=yes,height=700,width=1080,scrollbars=yes,status=yes";
 function newProductPage(){
     //TODO : Remove This Hard Codded Address
-    var strWindowFeatures = "location=yes,height=700,width=1080,scrollbars=yes,status=yes";
-    window.open("http://192.168.56.1:3000/addNewProduct",'_black',strWindowFeatures);
+    window.open(window.location.toString()+"/addNewProduct/",'_black',strWindowFeatures);
 }
 
 function updateElementFromAdmin(id){
-    console.log(id);
+    window.open(window.location.toString()+`/updateProduct/${id}`,'_black',strWindowFeatures);
+
 }
 
 function deleteElementFromAdmin(id){
-    console.log(id);
+    var callback=(request)=>{
+        switch(request.status){
+            case 200:{
+                window.location.reload();
+            }
+        }
+    }
+
+    createRequest('POST','/deleteProduct',id.toString(),callback);
     
 }
 
+//TODO: LOWER-PRIORITY:- If Possible use import function to import request code.
 
+function createRequest(method,dest,data,callback){
+    let request = new XMLHttpRequest;
+    request.open(method,dest);
+    request.setRequestHeader('Content-Type','text/plain');
+    request.send(data);
+    request.addEventListener('load',function(){
+        callback(request);
+    })
+}
 
-// const form = document.getElementById('new-product-form');
+const form = document.getElementById('new-product-form');
 // const submitBtn = document.getElementById('submit-btn');
 
 // //form values

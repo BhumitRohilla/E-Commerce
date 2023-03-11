@@ -68,12 +68,12 @@ app.route('/login')
         req.session.is_logged_in=true;
         req.session.user = data;
         res.statusCode = 200;
-        res.setHeader('Content-Type','plain/text')
+        res.setHeader('Content-Type','text/plain')
         res.end();
     })
     .catch(function(err){
         res.statusCode = 401;
-        res.setHeader('Content-Type','plain/text')
+        res.setHeader('Content-Type','text/plain')
         res.end();
     })
 })
@@ -95,7 +95,7 @@ app.route('/signup')
         if(data == 200){
             sendVerificationMail(user,function(){
                 res.statusCode = 200;
-                res.setHeader('Content-Type','plain/text')
+                res.setHeader('Content-Type','text/plain')
                 res.end();
             });
         }
@@ -287,13 +287,13 @@ app.get('/getProductValue/:id',async (req,res)=>{
     let {id} = req.params;
     // getQuantity(id,req.session.user.userName,function(data){
     //     res.statusCode = 200 ;
-    //     res.setHeader('Content-Type','plain/text');
+    //     res.setHeader('Content-Type','text/plain');
     //     res.send(data.toString());
     // });
     //TODO: Error Handleing;
     let quantity = await getQuantity(id,req.session.user.userName);
     res.statusCode = 200;
-    res.setHeader("Content-Type",'plain/text');
+    res.setHeader("Content-Type",'text/plain');
     res.send(quantity.toString());
 })
 
@@ -381,11 +381,11 @@ app.route('/adminDashboard')
 })
 
 
-app.route('/addNewProduct')
+app.route('/adminDashboard/addNewProduct')
 .get(adminAuth,(req,res)=>{
     res.render('newProductPage');
 })
-.post(upload.single("product-img")  ,async (req,res)=>{
+.post(adminAuth,upload.single("product-img")  ,async (req,res)=>{
     console.log(req.body);
     let obj = {};
     
@@ -407,16 +407,110 @@ app.route('/addNewProduct')
             res.statusCode = 404;
         }
     }
-    res.setHeader('Content-Type','plain/text');
+    res.setHeader('Content-Type','text/plain');
     res.send();
 
+})
+
+app.route('/adminDashboard/updateProduct/:id')
+.get(adminAuth,async (req,res)=>{
+    let {id} = req.params;
+    //TODO: Move This Into a function
+    let item = await db.collection('product').findOne({id});
+    res.render('updateProductPage',({item}));
+})
+.post(adminAuth,upload.single('product-img'),async (req,res)=>{
+    //TODO: Move This Into a function
+    let {title,tags,date,status,userReviews,stock,about} = req.body;
+    let {id} = req.params;
+    let item = await db.collection('product').findOne({id});
+    let updated = false;
+    if(title!=""){
+        item.title = title;
+        updated = true;
+    }
+    if(tags!=""){
+        item.tag = tags.split(' ');
+        updated = true;
+    }
+    if(date !=''){
+        item.date = date;
+        updated = true;
+    }
+    if(status != ''){
+        item.status = status;
+        updated = true;
+    }
+    if(userReviews != ''){
+        item.userReviews = userReviews;
+        updated = true;
+    }
+    if(item.stock != ''){
+        item.stock = stock;
+        updated = true;
+    }
+    if(item['about-game'] != '' ){
+        item['about-game'] = about;
+        updated = true;
+    }
+    let olderFile = item.img;
+    if(req.file!=undefined){
+        item.img = req.file.filename;
+        updated = true;
+        fs.unlink(path.join(__dirname,'/public/image/product',olderFile));
+    }
+
+    if(updated){
+        //TODO: Move This into code;
+        db.collection('product').updateOne({"id":item.id},{$set:item})
+        .then(function(){
+            res.statusCode = 200;
+            res.setHeader('Content-Type','text/plain');
+            res.send();
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.statusCode = 404;
+            res.setHeader('Content-Type','plain/text');
+            res.send();
+        })
+    }
+
+    console.log(item);
+    console.log("updating the product");
+
+});
+
+app.post('/deleteProduct',(req,res)=>{
+    req.data = '';
+    req.on('data',function(chunk){
+        req.data+=chunk;
+    })
+    req.on('end',function(){
+        console.log(req.data);
+        deletElement(req.data)
+        .then(function(){
+            res.setHeader('Content-Type','text/plain');
+            res.statusCode = 200;
+            res.send();
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.setHeader('Content-Type','text/plain');
+            res.statusCode = 404;
+            res.send();
+        })
+    })
 })
 
 app.get('*',(req,res)=>{
     res.sendStatus(404);
 })
 
-
+function deletElement(id){
+    //TODO: Move This into function
+    return db.collection('product').deleteOne({id});
+}
 
 function readFile(path,callback){
     fs.readFile(path,'utf8',function(err,data){
@@ -528,7 +622,7 @@ async function insertUser(user){
     //         for(let i = 0 ;i <users.length;++i){
     //             if(users[i].userName == userName){
     //                 res.statusCode = 401;
-    //                 res.setHeader('Content-Type','plain/text')
+    //                 res.setHeader('Content-Type','text/plain')
     //                 res.end();
     //                 return ;
     //             }
@@ -539,7 +633,7 @@ async function insertUser(user){
 
     //                 sendVerificationMail(user,function(){
     //                     res.statusCode = 200;
-    //                     res.setHeader('Content-Type','plain/text')
+    //                     res.setHeader('Content-Type','text/plain')
     //                     res.end();
     //                 });
     //                 return ;
@@ -547,7 +641,7 @@ async function insertUser(user){
     //         })
     //     }else{
     //         res.statusCode = 404;
-    //         res.setHeader('Content-Type','plain/text')
+    //         res.setHeader('Content-Type','text/plain')
     //         res.end();
     //     }
     // })
@@ -581,7 +675,7 @@ async function addToCart(pid, userName){
 }
 
 async function getQuantity(pid,userName){
-    // TODO(DB): Remove This Dependency
+    // TODO: Remove This Dependency
     let data = await db.collection('cart').findOne({userName});
     let quantity;
     if(data == null){
@@ -648,7 +742,7 @@ async function getUserCartItem(cart){
         for(key in cart.product){
             obj[key] = allItems[key];
             if(obj[key]==undefined){
-                //TODO : Remove Dependency from this code
+                //TODO: Remove Dependency from this code
                 let propertyToDelete = "product"+key;
                 db.collection('cart').updateMany({},{ $unset: {propertyToDelete}});
                 delete obj[key];
