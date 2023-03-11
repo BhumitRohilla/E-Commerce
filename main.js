@@ -13,8 +13,9 @@ const multer = require('multer');
 const upload = multer({'dest':'public/image/product/'});
 const path = require('path');
 const {MongoClient} = require('mongodb');
-const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc')
-
+const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc');
+const {getProducts} = require('./func/productFunc');
+const {getQuantity,addToCart} = require('./func/cartFunction');
 
 app.set('view engine','ejs');
 app.use(express.static('public'));
@@ -42,6 +43,8 @@ client.connect()
 })
 
 
+
+
 app.get('/',(req,res)=>{
     //TODO: Home Page
     if(req.session.user)
@@ -51,9 +54,13 @@ app.get('/',(req,res)=>{
     }
 });
 
+
+
+
 app.get('/home',homeAuth,(req,res)=>{
     res.redirect('product');
 });
+
 
 
 
@@ -121,6 +128,7 @@ app.route('/signup')
 
 
 
+
 app.get('/verify/:key',(req,res)=>{
     let filter = {'key':req.params.key};
     updateUser(filter,{"isVarified":true},db)
@@ -132,55 +140,16 @@ app.get('/verify/:key',(req,res)=>{
     })
 })
 
-// * Done upto Hear
+
+
+
 
 app.get('/logout',(req,res)=>{
     req.session.destroy();
     res.redirect('/');
 })
 
-app.route('/product')
-.get(homeAuth,async (req,res)=>{
-    // readFileStream('./product.json',function(data){
-    //     res.render('product',({user:req.session.userName,"data":data}));
-    // },req);
-    req.session.index = 0;
-    let data = await getProducts(0,5);
-    req.session.index = data.length;
-    
-    res.render('product',{'user': req.session.user && req.session.user.userName,"data":data});
-    // res.render('product',{user:req.session.userName,"data":data});
-})
 
-async function getProducts(starting,number){
-    return  await db.collection('product').find().skip(starting).limit(5).toArray()
-}
-
-app.get('/showMore',async (req,res)=>{
-    let skip = req.session.index;
-    
-    let data = await getProducts( skip , 5);
-    if( data == 0){
-        res.statusCode = 403;
-        res.send();
-        return ;
-    }
-    req.session.index = skip + data.length;
-    res.render('partials/productMore',{user:req.session.userName,"data":data});
-
-    // let data = getProducts(parseInt(req.session.index),5);
-    // req.session.index += data.length;
-    // res.send(data);
-    // if(req.session.index && req.session.index == -1){
-    //     res.statusCode=404;
-    //     res.end();
-    //     return ;
-    // }
-    // readFileStream('./product.json',function(data){
-    //    res.setHeader('Content-Type','application/JSON');
-    //    res.send(data);
-    // },req);
-})
 
 
 app.route('/changePassword')
@@ -292,6 +261,60 @@ app.route('/forgetPassword')
     // })
 })
 
+
+
+
+
+app.route('/product')
+.get(homeAuth,async (req,res)=>{
+    // readFileStream('./product.json',function(data){
+    //     res.render('product',({user:req.session.userName,"data":data}));
+    // },req);
+    req.session.index = 0;
+    let data = await getProducts(0,5,db);
+    req.session.index = data.length;
+    
+    res.render('product',{'user': req.session.user && req.session.user.userName,"data":data});
+    // res.render('product',{user:req.session.userName,"data":data});
+})
+
+
+
+
+
+app.get('/showMore',async (req,res)=>{
+    let skip = req.session.index;
+    
+    let data = await getProducts( skip , 5 , db);
+    if( data == 0){
+        res.statusCode = 403;
+        res.send();
+        return ;
+    }
+    req.session.index = skip + data.length;
+    res.render('partials/productMore',{user:req.session.userName,"data":data});
+
+    // let data = getProducts(parseInt(req.session.index),5);
+    // req.session.index += data.length;
+    // res.send(data);
+    // if(req.session.index && req.session.index == -1){
+    //     res.statusCode=404;
+    //     res.end();
+    //     return ;
+    // }
+    // readFileStream('./product.json',function(data){
+    //    res.setHeader('Content-Type','application/JSON');
+    //    res.send(data);
+    // },req);
+})
+
+
+
+
+
+
+
+
 app.get('/getProductValue/:id',async (req,res)=>{
     // res.send(req.params);
     let {id} = req.params;
@@ -300,8 +323,17 @@ app.get('/getProductValue/:id',async (req,res)=>{
     //     res.setHeader('Content-Type','text/plain');
     //     res.send(data.toString());
     // });
-    //TODO: Error Handleing;
-    let quantity = await getQuantity(id,req.session.user.userName);
+    let quantity;
+    try{
+        quantity = await getQuantity(id,req.session.user.userName,db);
+    }
+    catch(err){
+        console.log(err);
+        res.statusCode = 404;
+        res.setHeader("Content-Type",'text/plain');
+        res.send();
+        return ;
+    }
     res.statusCode = 200;
     res.setHeader("Content-Type",'text/plain');
     res.send(quantity.toString());
@@ -313,12 +345,24 @@ app.get('/buyProduct/:pid',async (req,res)=>{
     let stockLeft = await getProductStock(pid);
     if(stockLeft > 0){
         res.statusCode = 201;
-        addToCart(pid,req.session.user.userName);
+        try{
+            addToCart(pid,req.session.user.userName,db);
+        }
+        catch(err){
+            console.log(err);
+            res.statusCode = 404;
+            res.send();
+            return ;
+        }
     }else{
         res.statusCode = 204;
     }
     res.send();
 })
+
+
+// * Done upto Hear 
+
 
 app.get('/removeProduct/:pid',async (req,res)=>{
     let {pid} = req.params;
@@ -589,52 +633,8 @@ async function getUserCart(userName){
 
 
 
-async function addToCart(pid, userName){
-    //TODO: Move this into a function remove dependence on database; 
-    let userCart = await db.collection('cart').findOne({"userName":userName});
-    try{
-        userCart.product[pid].quantity++;
-    }
-    catch(err){
-        console.log(userCart);
-        let userExist = true;
-        if(userCart == null){
-            userCart = {
-                userName,
-                product : {}
-            }
-            userExist = false;
-        }
-        console.log(err);
-        userCart.product[pid] = {};
-        userCart.product[pid].quantity = 1;
-        if(!userExist){
-            db.collection('cart').insertOne(userCart);
-            return ;
-        }
-    }
-    db.collection('cart').updateOne({"userName":userName},{$set:{"product":userCart.product}});
-}
 
-async function getQuantity(pid,userName){
-    // TODO: Remove This Dependency
-    let data = await db.collection('cart').findOne({userName});
-    let quantity;
-    if(data == null){
-        quantity = 0;
-    }else{
-        console.log(data);
-        try{
-            quantity = data.product[pid].quantity;
-            console.log(quantity);
-        }
-        catch(err){
-            console.log(err);
-            quantity =  0;
-        }
-    }
-    return quantity;
-}
+
 
 // function getQuantity(pid,userName,callback){
 //     fs.readFile('./cart.json',function(err,data){
