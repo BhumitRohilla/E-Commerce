@@ -1,7 +1,7 @@
 <div id="<%=item.id%>" class='inner-item-container'>
     <h2 class="item-title"><%= item.title %></h2>
     <div class="item-img-container">
-        <img class="item-img" src="<%=item.img %>">
+        <img class="item-img" src="/image/product/<%=item.img %>">
     </div>
     <div class="footer-cluster">
             <button onclick="increaseQuantity('<%=item.id%>')" class="item-plus">+</button>

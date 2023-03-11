@@ -1,35 +1,33 @@
-<div>
-    <div>
-        <img src="" alt="">
+<div class="admin-item-container">
+  <div class=""><img src=<%=`/image/product/${item.img}`%> alt=""></div>
+  <div class="table">
+    <div class="tr">
+      <div class="td">Title</div>
+      <div class="td"><%=item.title%></div>
     </div>
-    <div class="table">
-        <div class="tr">
-            <div class="td">Title</div>
-            <div class="td"><input type="text" value=""></div>
-        </div>
-        <div class="tr">
-            <div class="td">Tag</div>
-            <div class="td"><input type="text" value=""></div>
-        </div>
-        <div class="tr">
-            <div class="td">Date</div>
-            <div class="td"><input type="date" value=""></div>
-        </div>
-        <div class="tr">
-            <div class="td">Status</div>
-            <div class="td"><input type="date" value=""></div>
-        </div>
-        <div class="tr">
-            <div class="td">User Reviews</div>
-            <div class="td"><input type="date" value=""></div>
-        </div>
-        <div class="tr">
-            <div class="td">Img</div>
-            <div class="td"><input type="date" value=""></div>
-        </div>
-        <div class="tr">
-            <div class="td">Stock</div>
-            <div class="td"><input type="date" value=""></div>
-        </div>
+    <div class="tr">
+      <div class="td">Tag</div>
+      <div class="td"><%=item.tag.join(' ')%></div>
     </div>
+    <div class="tr">
+      <div class="td">Date</div>
+      <div class="td"><%=item.date%></div>
+    </div>
+    <div class="tr">
+      <div class="td">Status</div>
+      <div class="td"><%=item.status%></div>
+    </div>
+    <div class="tr">
+      <div class="td">UserReviews</div>
+      <div class="td"><%=item.userReviews%></div>
+    </div>
+    <div class="tr">
+      <div class="td">Stock</div>
+      <div class="td"><%=item.stock%></div>
+    </div>
+  </div>
+  <div class="admin-btn-cluster">
+    <button class="update-btn" onclick="updateElementFromAdmin( '<%=item.id%>' )">Update</button>
+    <button class="delete-btn" onclick="deleteElementFromAdmin( '<%=item.id%>' )">Delete</button>
+  </div>
 </div>

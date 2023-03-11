@@ -21,13 +21,6 @@ body{
     height: 100%;
 }
 
-.product-container{
-    box-sizing: border-box;
-    margin: auto;
-    max-width: 1080px;
-    color: white;
-    height: 100%;
-}
 
 #addNewProduct{
     width: 50px;
@@ -37,6 +30,9 @@ body{
     bottom: 20px;
     right: 20px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #addNewProduct:hover{
     cursor: pointer;
@@ -45,4 +41,75 @@ body{
 
 #addNewProduct:active{
     background: #c5c3c0;
+}
+.buttonline{
+    background-color: #070b0f;
+    border-radius: 7px;
+    position: absolute;
+}
+#vertical{
+    height: 40px;
+    width: 10px;
+}
+#horizontal{
+    height: 10px;
+    width: 40px;
+}
+
+.table{
+    display: table;
+}
+.td{
+    
+    border-left: 50px;
+}
+.tr{
+    display: table-row;
+}
+
+.tr > .td:first-child{
+    border: 0px;
+}
+
+.td{
+    display: table-cell;
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
+.product-container{
+    display: grid;
+    box-sizing: border-box;
+    margin: auto;
+    color: white;
+    grid-template-columns: repeat(auto-fit,minmax(500px, 1fr) );
+    padding: 20px; 
+}
+
+.admin-item-container{
+    margin:0 auto;
+    margin-bottom: 30px;
+    width: 460px;
+}
+
+
+.admin-btn-cluster{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.update-btn{
+    background-color: blue;
+    outline: transparent;
+    border: none;
+    height: 40px;
+    flex: 1;
+}
+.delete-btn{
+    background-color: red;
+    outline: transparent;
+    border: none;
+    height: 40px;
+    flex: 1;
 }

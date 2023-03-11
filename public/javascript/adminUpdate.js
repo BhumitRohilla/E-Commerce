@@ -41,6 +41,7 @@ submitBtn.addEventListener('click',function(evt){
     request.addEventListener('load',function(){
         switch(request.status){
             case 200:{
+                window.opener.location.reload();
                 window.close();
                 break;
             }

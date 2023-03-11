@@ -369,12 +369,15 @@ app.get("/forgetPassword/change/:key",async (req,res)=>{
 })
 
 app.route('/adminDashboard')
-.get(adminAuth,(req,res)=>{
+.get(adminAuth,async (req,res)=>{
     let err = req.session.err;
     if(err!=undefined){
         delete req.session.err;
     }
-    res.render('adminDashboard',{"userName":req.session.user.userName,"err":err});  
+    // TODO: Error Handling to be added;
+    let allProduct = await getAllProduct();
+    console.log(allProduct);
+    res.render('adminDashboard',{"userName":req.session.user.userName,"err":err,"product":allProduct});  
 })
 
 
@@ -495,7 +498,7 @@ async function getUser(user){
 
 async function getUserCart(userName){
     // console.log(user);
-    //TODO: Remove db dependency from here;
+    //TODO: Remove db dependency F;
     return db.collection('cart').findOne({"userName":userName});
 }
 
@@ -638,12 +641,20 @@ async function getProductStock(pid){
 }
 
 async function getUserCartItem(cart){
+    //TODO: ERROR HANDLING
     let allItems = await getAllProduct();
     let obj = {};
     if(cart != null){
         for(key in cart.product){
             obj[key] = allItems[key];
-            obj[key].quantity = cart.product[key].quantity;
+            if(obj[key]==undefined){
+                //TODO : Remove Dependency from this code
+                let propertyToDelete = "product"+key;
+                db.collection('cart').updateMany({},{ $unset: {propertyToDelete}});
+                delete obj[key];
+            }else{
+                obj[key].quantity = cart.product[key].quantity;
+            }
         }
     }
     return obj;
@@ -696,7 +707,7 @@ async function addProduct(obj){
     finalObj.tag = tagArray;
     finalObj.status = obj.status;
     finalObj.userReviews = obj.userReviews;
-    finalObj.img = path.join('/image/product',obj.imgSrc);
+    finalObj.img = obj.imgSrc;
     finalObj.stock = obj.stock;
     finalObj['about-game'] = obj.about;
     console.log(finalObj);

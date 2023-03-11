@@ -1,7 +1,18 @@
 function newProductPage(){
+    //TODO : Remove This Hard Codded Address
     var strWindowFeatures = "location=yes,height=700,width=1080,scrollbars=yes,status=yes";
     window.open("http://192.168.56.1:3000/addNewProduct",'_black',strWindowFeatures);
 }
+
+function updateElementFromAdmin(id){
+    console.log(id);
+}
+
+function deleteElementFromAdmin(id){
+    console.log(id);
+    
+}
+
 
 
 // const form = document.getElementById('new-product-form');

@@ -16,13 +16,15 @@
         <% } %>
         
         <div class="product-container">
-
+            <% for(key in product){ %>
+                        <%- include('partials/adminItem',({"item":product[key]})); %>
+                <%}%>
         </div>
     </div>
     <div id="addNewProduct" onclick="newProductPage()">
-        <div id="buttonline vertical"></div>
-        <div id="buttonline horizontal"></div>
+        <div id="vertical" class="buttonline"></div>
+        <div id="horizontal" class="buttonline"></div>
     </div>
 </body>
-<script src="/javascript/adminDashboard.js"></script>
+<script src="/javascript/adminDashboard.js" ></script>
 </html>
