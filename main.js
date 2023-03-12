@@ -14,7 +14,7 @@ const upload = multer({'dest':'public/image/product/'});
 const path = require('path');
 const {MongoClient} = require('mongodb');
 const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc');
-const {getProducts} = require('./func/productFunc');
+const {getProducts,getSingleProduct,decreaseOneStock} = require('./func/productFunc');
 const {getQuantity,addToCart} = require('./func/cartFunction');
 
 app.set('view engine','ejs');
@@ -340,10 +340,25 @@ app.get('/getProductValue/:id',async (req,res)=>{
 })
 
 
+
+
+
+
 app.get('/buyProduct/:pid',async (req,res)=>{
     let {pid} = req.params;
-    let stockLeft = await getProductStock(pid);
-    if(stockLeft > 0){
+    let stock
+    try{
+        let product = await getSingleProduct(pid,db);
+        stock = product.stock;
+    }
+    catch(err){
+        res.statusCode = 404;
+        res.setHeader('Content-Type','text/plain');
+        res.send();
+        return ;
+    }
+     
+    if(stock > 1){
         res.statusCode = 201;
         try{
             addToCart(pid,req.session.user.userName,db);
@@ -353,6 +368,15 @@ app.get('/buyProduct/:pid',async (req,res)=>{
             res.statusCode = 404;
             res.send();
             return ;
+        }
+        try{
+            decreaseOneStock(pid,db);
+        }
+        catch(err){
+            removeFromCart(pid,req.session.user.userName,db);
+            console.log(err);
+            res.statusCode = 404;
+            res.send();
         }
     }else{
         res.statusCode = 204;
@@ -366,7 +390,16 @@ app.get('/buyProduct/:pid',async (req,res)=>{
 
 app.get('/removeProduct/:pid',async (req,res)=>{
     let {pid} = req.params;
-    let quantity = await quantityElement(req.session.user.userName,pid);
+    let quantity;
+    try{
+        quantity = await getQuantity(pid,req.session.user.userName,db);
+    }
+    catch(err){
+        console.log(err);
+        res.statusCode = 404;
+        res.setHeader('Content-Type','text/plain');
+        res.send();
+    }
     console.log(quantity);
     if(quantity > 1){
         res.statusCode = 201;
@@ -659,22 +692,7 @@ async function getUserCart(userName){
 //     })
 // }
 
-async function getProductStock(pid){
-    //TODO: Add it In another function remove dependecy on function; 
-    let element = await db.collection('product').findOne({"id":pid});
-    let stock = element.stock;
-    if(stock == 0){
-        return 0;
-    }else{
-        try{
-            await db.collection('product').updateOne({"id":pid},{$set:{"stock":(stock-1)}});
-        }
-        catch(err){
-            console.log(err);
-        }
-        return stock;
-    }
-}
+
 
 async function getUserCartItem(cart){
     //TODO: ERROR HANDLING
@@ -726,11 +744,11 @@ async function removeFromCart(pid, userName){
 }
 
 
-async function quantityElement(userName,pid){
-    //TODO: move it into function
-    let cart = await db.collection('cart').findOne({'userName':userName});
-    return cart.product[pid].quantity;
-}
+//TODO:  Check and remove this code
+// async function quantityElement(userName,pid){
+//     let cart = await db.collection('cart').findOne({'userName':userName});
+//     return cart.product[pid].quantity;
+// }
 
 
 async function addProduct(obj){
