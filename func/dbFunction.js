@@ -18,4 +18,12 @@ function findAllWithSkip(db,collection,starting,length,filter){
     return db.collection(collection).find(filter).skip(starting).limit(length).toArray();
 }
 
-module.exports = {findAll,findOne,insertOne,updateOne,findAllWithSkip};
+function updateMany(db,collection,filter,data){
+    db.collection(collection).updateMany(filter,{$set:data});
+}
+
+function removePropertyFromAll(db,collection,filter,data){
+    db.collection(collection).updateMany(filter,{$unset:data});
+}
+
+module.exports = {findAll,findOne,insertOne,updateOne,findAllWithSkip,updateMany,removePropertyFromAll};

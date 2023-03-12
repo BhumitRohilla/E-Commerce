@@ -14,8 +14,8 @@ const upload = multer({'dest':'public/image/product/'});
 const path = require('path');
 const {MongoClient} = require('mongodb');
 const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc');
-const {getProducts,getSingleProduct,decreaseOneStock} = require('./func/productFunc');
-const {getQuantity,addToCart} = require('./func/cartFunction');
+const {getProducts,getSingleProduct,decreaseOneStock,getAllProduct} = require('./func/productFunc');
+const {getQuantity,addToCart,removeFromCart,getUserCart,getUserCartItem} = require('./func/cartFunction');
 
 app.set('view engine','ejs');
 app.use(express.static('public'));
@@ -385,7 +385,7 @@ app.get('/buyProduct/:pid',async (req,res)=>{
 })
 
 
-// * Done upto Hear 
+
 
 
 app.get('/removeProduct/:pid',async (req,res)=>{
@@ -400,22 +400,46 @@ app.get('/removeProduct/:pid',async (req,res)=>{
         res.setHeader('Content-Type','text/plain');
         res.send();
     }
-    console.log(quantity);
+    // console.log(quantity);
     if(quantity > 1){
         res.statusCode = 201;
-        removeFromCart(pid,req.session.user.userName);
+        try{
+            removeFromCart(pid,req.session.user.userName,db);
+        }
+        catch(err){
+            console.log(err);
+            res.statusCode = 404;
+            res.send();
+            return ;
+        }
     }else{
         res.statusCode = 204;
     }
     res.send();
 })
 
+
+
+
+
+
 app.route('/myCart')
 .get(homeAuth,async (req,res)=>{
-    let cart = await getUserCart(req.session.user.userName);
-    let cartItem = await getUserCartItem(cart); 
-    res.render('cart',({"userName":req.session.user.userName,"items":cartItem}));
+    try{
+        let cart = await getUserCart(req.session.user.userName,db);
+        let cartItem = await getUserCartItem(cart,db); 
+        res.render('cart',({"userName":req.session.user.userName,"items":cartItem}));
+    }
+    catch(err){
+        console.log(err);
+        res.statusCode = 404;
+        res.send("Error Occure");
+    }
 })
+
+
+// * Done upto Hear
+
 
 app.get("/forgetPassword/change/:key",async (req,res)=>{
     let {key} = req.params;
@@ -453,7 +477,7 @@ app.route('/adminDashboard')
         delete req.session.err;
     }
     // TODO: Error Handling to be added;
-    let allProduct = await getAllProduct();
+    let allProduct = await getAllProduct(db);
     console.log(allProduct);
     res.render('adminDashboard',{"userName":req.session.user.userName,"err":err,"product":allProduct});  
 })
@@ -658,11 +682,7 @@ app.listen(process.env.PORT,process.env.HOSTNAME,function(){
 
 
 
-async function getUserCart(userName){
-    // console.log(user);
-    //TODO: Remove db dependency F;
-    return db.collection('cart').findOne({"userName":userName});
-}
+
 
 
 
@@ -694,54 +714,11 @@ async function getUserCart(userName){
 
 
 
-async function getUserCartItem(cart){
-    //TODO: ERROR HANDLING
-    let allItems = await getAllProduct();
-    let obj = {};
-    if(cart != null){
-        for(key in cart.product){
-            obj[key] = allItems[key];
-            if(obj[key]==undefined){
-                //TODO: Remove Dependency from this code
-                let propertyToDelete = "product"+key;
-                db.collection('cart').updateMany({},{ $unset: {propertyToDelete}});
-                delete obj[key];
-            }else{
-                obj[key].quantity = cart.product[key].quantity;
-            }
-        }
-    }
-    return obj;
-}
 
-async function getAllProduct(){
-    //TODO: remote dependency;
-    let data = await db.collection('product').find().toArray();
-    let obj ={};
-    data =  data.forEach((element)=>{
-        obj[element.id] = element;
-    })
-    return obj;
-}
 
-async function removeFromCart(pid, userName){
-    //TODO: Move this into a function remove dependence on database; 
-    let userCart = await db.collection('cart').findOne({"userName":userName});
-    try{
-        if(userCart.product[pid].quantity > 0){
-            userCart.product[pid].quantity--;
-        }
-    }
-    catch(err){
-        console.log(err);
-        userCart.product[pid] = {};
-        userCart.product[pid].quantity = 1;
-    }
-    db.collection('cart').updateOne({"userName":userName},{$set:{"product":userCart.product}});
-    let data = await db.collection('product').findOne({'id':pid});
-    data.stock++;
-    db.collection('product').updateOne({'id':pid},{$set:{"stock":data.stock}});
-}
+
+
+
 
 
 //TODO:  Check and remove this code

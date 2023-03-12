@@ -1,4 +1,4 @@
-let {findAllWithSkip,findOne,updateOne} = require('./dbFunction');
+let {findAllWithSkip,findOne,updateOne,findAll} = require('./dbFunction');
 
 let collection = 'product';
 
@@ -9,8 +9,6 @@ function getProducts(starting,number,db){
 
 
 function getSingleProduct(pid,db){
-    //TODO: Add it In another function remove dependecy on function; 
-    console.log(pid);
     return findOne(db,collection,{"id":pid});
     // let element = await db.collection('product').findOne({"id":pid});
     // let stock = element.stock;
@@ -27,6 +25,21 @@ function getSingleProduct(pid,db){
     // }
 }
 
+
+async function increaseOneStock(pid,db){
+    let product;
+    let stock;
+    try{
+        // * db.collection('product').findOne({"id":pid});
+        product = await findOne(db,collection,{"id":pid});
+        stock = product.stock;
+        stock++;
+        await updateOne(db,collection,{"id":pid},{"stock":stock});
+    }
+    catch(err){
+        throw err;
+    }
+}
 
 async function decreaseOneStock(pid,db){
     let product;
@@ -46,5 +59,21 @@ async function decreaseOneStock(pid,db){
     }
 }
 
+async function getAllProduct(db){
+    let data;
+    try{
+        data = await findAll(db,collection,{});
+    }
+    catch(err){
+        throw err;
+    }
+    // * let data = await db.collection('product').find().toArray();
+    let obj ={};
+    data =  data.forEach((element)=>{
+        obj[element.id] = element;
+    })
+    return obj;
+}
 
-module.exports = {getProducts,getSingleProduct,decreaseOneStock};
+
+module.exports = {getProducts,getSingleProduct,decreaseOneStock,increaseOneStock,getAllProduct};
