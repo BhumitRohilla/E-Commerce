@@ -7,3 +7,14 @@ header{
 body{
     background: linear-gradient(to bottom right,);
 }
+
+
+
+#main-container{
+    width: 100vw;
+    height: calc(100vh - 58px);
+    background-image: url('/image/home/store_home_share.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:cover;
+}

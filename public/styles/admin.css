@@ -96,24 +96,30 @@ body{
 
 
 .admin-btn-cluster{
+    margin-top: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 20px   ;
+}
+
+
+.admin-btn{
+    box-sizing: border-box;
+    height: 40px;
+    border: none;
+    outline: none;
+    flex: 1;
+    border-radius: 4px;
+
 }
 
 .update-btn{
-    background-color: blue;
-    outline: transparent;
-    border: none;
-    height: 40px;
-    flex: 1;
+    background-color: #ffc107;
+    
 }
 .delete-btn{
-    background-color: red;
-    outline: transparent;
-    border: none;
-    height: 40px;
-    flex: 1;
+    background-color: #dc3545;
 }
 
 img{

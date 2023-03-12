@@ -24,8 +24,11 @@ submitBtn.addEventListener('click',function(evt){
     let stock = stockInput.value
     let about = aboutInput.value.trim();
     let img = imgInput.value.trim();
-    if( url=="/adminDashboard/addNewProduct" && (title == "" || tag == "" || date == "" || statusProduct == "" || userReviews == "" /*|| price == ""*/ || stock == "" || about == "" || img == "")){
-        alert("Please Enter All The Value");
+    if( url=="/adminDashboard/addNewProduct" && (title == "" || tag == "" || date == "" || statusProduct == "" || userReviews == "" /*|| price == ""*/ || stock == ""  || about == "" || img == "")){
+        alert("Please Enter all the arguments");
+        return ;
+    }else if(userReviews < 0 || stock  < 0){
+        alert("Please Enter none negative values");
         return ;
     }else if(img!=""){
         let sizeOfImg = imgInput.files[0].size;

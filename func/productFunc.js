@@ -1,4 +1,4 @@
-let {findAllWithSkip,findOne,updateOne,findAll} = require('./dbFunction');
+let {findAllWithSkip,findOne,updateOne,findAll, insertOne,deleteOne} = require('./dbFunction');
 
 let collection = 'product';
 
@@ -76,4 +76,30 @@ async function getAllProduct(db){
 }
 
 
-module.exports = {getProducts,getSingleProduct,decreaseOneStock,increaseOneStock,getAllProduct};
+async function addProduct(obj,db){
+    //TODO: Remove This Dependency;
+    let finalObj = {}
+    finalObj.id = obj.id
+    finalObj.title = obj.title;
+    let tagArray = obj.tags.split(' ');
+    finalObj.date = obj.date;
+    finalObj.tag = tagArray;
+    finalObj.status = obj.status;
+    finalObj.userReviews = obj.userReviews;
+    finalObj.img = obj.imgSrc;
+    finalObj.stock = obj.stock;
+    finalObj['about-game'] = obj.about;
+    return insertOne(db,collection,finalObj);
+    // * return await db.collection('product').insertOne(finalObj);
+}
+
+function updateProduct(pid,data,db){
+    // db.collection().
+    return updateOne(db,{"id":pid},data);
+}
+
+function deleteSingleProduct(pid,db){
+    return deleteOne(db,collection,{"id":pid});
+}
+
+module.exports = {getProducts,getSingleProduct,decreaseOneStock,increaseOneStock,getAllProduct,addProduct,updateProduct,deleteSingleProduct};

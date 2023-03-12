@@ -19,11 +19,16 @@ function findAllWithSkip(db,collection,starting,length,filter){
 }
 
 function updateMany(db,collection,filter,data){
-    db.collection(collection).updateMany(filter,{$set:data});
+    return db.collection(collection).updateMany(filter,{$set:data});
 }
 
 function removePropertyFromAll(db,collection,filter,data){
-    db.collection(collection).updateMany(filter,{$unset:data});
+    return db.collection(collection).updateMany(filter,{$unset:data});
 }
 
-module.exports = {findAll,findOne,insertOne,updateOne,findAllWithSkip,updateMany,removePropertyFromAll};
+
+function deleteOne(db,collection,filter){
+    return db.collection(collection).deleteOne(filter); 
+}
+
+module.exports = {findAll,findOne,insertOne,updateOne,findAllWithSkip,updateMany,removePropertyFromAll,deleteOne};

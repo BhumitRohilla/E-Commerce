@@ -1,28 +1,32 @@
 <header class="flex-row js-bt ai-cn">
-<% if( user===undefined ) { %>
     <div class="nav">
         <div>
-            <img class="logo" src="/image/login/logo_steam.svg">
+            <a href="/"><img class="logo" src="/image/login/logo_steam.svg"></a>
         </div>
+        <% if( user===undefined ) { %>
         <div class="nav-btn-cluster">
             <button id="login-btn" class="btn">Login</button>
         </div>
-    </div>
-<% }else{ %>
-    <div class="nav">
-        <div>
-            <img class="logo" src="/image/login/logo_steam.svg">
-        </div>
+        <% }else if(user == 'admin'){ %>
         <div class="flex-row nav-btn-cluster">
-            <p class="dark-text"><%=user%></p>
+            <button onclick="window.location.href='adminDashboard'" class="btn">AdmiDashBoard</button>
+            <button onclick="window.location.href='product'" class="btn">Product</button>
+            <button onclick="window.location.href='myCart'"  class="btn">Cart</button>
             <button id="logout-btn" class="btn">Logout</button>
         </div>
+        <%}else{%>
+        <div class="flex-row nav-btn-cluster">
+            <p style="margin-right: 40px;" class="dark-text"><%=user%></p>
+            <button onclick="window.location.href='product'" class="btn">Product</button>
+            <button onclick="window.location.href='myCart'" class="btn">Cart</button>
+            <button id="logout-btn" class="btn">Logout</button>
+        </div>
+        <%}%>
     </div>
-<%}%>
 </header>
 
 <script>
-    var loginBtn = document.getElementById('login-btn');
+var loginBtn = document.getElementById('login-btn');
 var logoutBtn = document.getElementById('logout-btn');
 
 if(logoutBtn==null){

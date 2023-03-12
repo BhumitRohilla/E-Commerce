@@ -14,7 +14,7 @@ const upload = multer({'dest':'public/image/product/'});
 const path = require('path');
 const {MongoClient} = require('mongodb');
 const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc');
-const {getProducts,getSingleProduct,decreaseOneStock,getAllProduct} = require('./func/productFunc');
+const {getProducts,getSingleProduct,decreaseOneStock,getAllProduct,addProduct,updateProduct,deleteSingleProduct} = require('./func/productFunc');
 const {getQuantity,addToCart,removeFromCart,getUserCart,getUserCartItem} = require('./func/cartFunction');
 
 app.set('view engine','ejs');
@@ -263,6 +263,44 @@ app.route('/forgetPassword')
 
 
 
+app.get("/forgetPassword/change/:key",async (req,res)=>{
+    let {key} = req.params;
+    let user;
+    try{
+        user = await getUser({'passwordChange':key},db);
+    }
+    catch(err){
+        console.log(err);
+        res.statusCode = 404;
+        res.send();
+        return;
+    }
+    if(user != null){
+        req.session.is_logged_in = true;
+        req.session.user = user;
+        updateUser({"userName":user.userName},{passwordChange:null},db);
+    }
+    res.redirect("/changePassword");
+    // readFile('./userData.json',function(err,data){
+    //     if(!err){
+    //         data = JSON.parse(data);
+    //         let user ;
+    //         data.forEach((element)=>{
+    //             if(element.changePasswordToken == key){
+    //                 user = element;
+    //             }
+    //         })
+    //         if(user!=null){
+    //             req.session.userName = user.userName;
+    //             req.session.is_logged_in = true;
+    //             req.session.isVarified = true;
+    //             res.redirect('/changePassword');
+    //         }
+    //     }
+    // })
+})
+
+
 
 
 app.route('/product')
@@ -438,37 +476,7 @@ app.route('/myCart')
 })
 
 
-// * Done upto Hear
 
-
-app.get("/forgetPassword/change/:key",async (req,res)=>{
-    let {key} = req.params;
-    let user = await getUser({'passwordChange':key},db);
-
-    if(user != null){
-        req.session.is_logged_in = true;
-        req.session.user = user;
-        
-    }
-    res.redirect("/changePassword");
-    // readFile('./userData.json',function(err,data){
-    //     if(!err){
-    //         data = JSON.parse(data);
-    //         let user ;
-    //         data.forEach((element)=>{
-    //             if(element.changePasswordToken == key){
-    //                 user = element;
-    //             }
-    //         })
-    //         if(user!=null){
-    //             req.session.userName = user.userName;
-    //             req.session.is_logged_in = true;
-    //             req.session.isVarified = true;
-    //             res.redirect('/changePassword');
-    //         }
-    //     }
-    // })
-})
 
 app.route('/adminDashboard')
 .get(adminAuth,async (req,res)=>{
@@ -477,10 +485,20 @@ app.route('/adminDashboard')
         delete req.session.err;
     }
     // TODO: Error Handling to be added;
-    let allProduct = await getAllProduct(db);
-    console.log(allProduct);
+    let allProduct;
+    try{
+        allProduct = await getAllProduct(db);
+    }
+    catch(err){
+        res.statusCode = 404;
+        res.setHeader('Content-Type','text/plain');
+        res.send();
+        return ;
+    }
     res.render('adminDashboard',{"userName":req.session.user.userName,"err":err,"product":allProduct});  
 })
+
+
 
 
 app.route('/adminDashboard/addNewProduct')
@@ -499,9 +517,11 @@ app.route('/adminDashboard/addNewProduct')
         let {title,tags,date,status,userReviews,stock,about} = req.body;
         obj = {title,tags,date,status,userReviews,stock,about};
         obj.imgSrc = req.file.filename;
+        // TODO: Implement check here checkInput(obj);
         console.log(req.file);
         try{
-            await addProduct(obj);
+            obj.id = crypto.randomBytes(7).toString('hex');
+            await addProduct(obj,db);
             res.statusCode = 200;
         }
         catch(err){
@@ -514,74 +534,100 @@ app.route('/adminDashboard/addNewProduct')
 
 })
 
-app.route('/adminDashboard/updateProduct/:id')
+
+
+
+
+
+
+app.route('/adminDashboard/updateProduct/:pid')
 .get(adminAuth,async (req,res)=>{
-    let {id} = req.params;
+    let {pid} = req.params;
     //TODO: Move This Into a function
-    let item = await db.collection('product').findOne({id});
+    let item;
+    try{
+        item = await getSingleProduct(pid,db);
+    }
+    catch(err){
+        res.statusCode = 404;
+        res.send("Unable to find the product");
+        return ;
+    }
+    // let item = await db.collection('product').findOne({id});
     res.render('updateProductPage',({item}));
 })
 .post(adminAuth,upload.single('product-img'),async (req,res)=>{
-    //TODO: Move This Into a function
     let {title,tags,date,status,userReviews,stock,about} = req.body;
-    let {id} = req.params;
-    let item = await db.collection('product').findOne({id});
-    let updated = false;
-    if(title!=""){
-        item.title = title;
-        updated = true;
-    }
-    if(tags!=""){
-        item.tag = tags.split(' ');
-        updated = true;
-    }
-    if(date !=''){
-        item.date = date;
-        updated = true;
-    }
-    if(status != ''){
-        item.status = status;
-        updated = true;
-    }
-    if(userReviews != ''){
-        item.userReviews = userReviews;
-        updated = true;
-    }
-    if(item.stock != ''){
-        item.stock = stock;
-        updated = true;
-    }
-    if(item['about-game'] != '' ){
-        item['about-game'] = about;
-        updated = true;
-    }
-    let olderFile = item.img;
-    if(req.file!=undefined){
-        item.img = req.file.filename;
-        updated = true;
-        fs.unlink(path.join(__dirname,'/public/image/product',olderFile));
-    }
+    let {pid} = req.params;
+    let item;
+    //TODO:
+    try{
+        item = await getSingleProduct(pid,db);
+        let updated = false;
+        if(title!=""){
+            item.title = title;
+            updated = true;
+        }
+        if(tags!=""){
+            item.tag = tags.split(' ');
+            updated = true;
+        }
+        if(date !=''){
+            item.date = date;
+            updated = true;
+        }
+        if(status != ''){
+            item.status = status;
+            updated = true;
+        }
+        if(userReviews != '' && userReviews > 0){
+            item.userReviews = userReviews;
+            updated = true;
+        }
+        if(stock != '' && stock > 0){
+            item.stock = stock;
+            updated = true;
+        }
+        if(item['about-game'] != '' ){
+            item['about-game'] = about;
+            updated = true;
+        }
+        let olderFile = item.img;
+        if(req.file!=undefined){
+            item.img = req.file.filename;
+            updated = true;
+            // TODO: Low Priority Move It into function;
+            fs.unlink(path.join(__dirname,'/public/image/product',olderFile));
+        }
 
-    if(updated){
-        //TODO: Move This into code;
-        db.collection('product').updateOne({"id":item.id},{$set:item})
-        .then(function(){
-            res.statusCode = 200;
-            res.setHeader('Content-Type','text/plain');
-            res.send();
-        })
-        .catch((err)=>{
-            console.log(err);
-            res.statusCode = 404;
-            res.setHeader('Content-Type','plain/text');
-            res.send();
-        })
+        if(updated){
+            //TODO: Move This into code;
+            // db.collection('product').updateOne({"id":item.id},{$set:item})
+            updateProduct(pid,item,db)
+            .then(function(){
+                res.statusCode = 200;
+                res.setHeader('Content-Type','text/plain');
+                res.send();
+            })
+            .catch((err)=>{
+                console.log(err);
+                res.statusCode = 404;
+                res.setHeader('Content-Type','plain/text');
+                res.send();
+            })
+        }
     }
-
-    console.log(item);
-    console.log("updating the product");
-
+    catch(err){
+        res.statusCode = 404;
+        res.setHeader('Content-Type','text/plain');
+        res.send();
+    }
+    // let item = await db.collection('product').findOne({id});
 });
+
+
+
+
 
 app.post('/deleteProduct',(req,res)=>{
     req.data = '';
@@ -589,8 +635,9 @@ app.post('/deleteProduct',(req,res)=>{
         req.data+=chunk;
     })
     req.on('end',function(){
-        console.log(req.data);
-        deletElement(req.data)
+        // console.log(req.data);
+        // deletElement(req.data)
+        deleteSingleProduct(req.data,db)
         .then(function(){
             res.setHeader('Content-Type','text/plain');
             res.statusCode = 200;
@@ -609,76 +656,80 @@ app.get('*',(req,res)=>{
     res.sendStatus(404);
 })
 
-function deletElement(id){
-    //TODO: Move This into function
-    return db.collection('product').deleteOne({id});
-}
-
-function readFile(path,callback){
-    fs.readFile(path,'utf8',function(err,data){
-        callback(err,data)
-    })
-}
-
-function writeFile(path,string,callback){
-    fs.writeFile(path,string,'utf8',function(err){
-        callback(err);
-    })
-}
-
-function readFileStream(path,callback,req){
-    let index = req.session.index;
-    let readStream = fs.createReadStream(path,{encoding:"ascii",highWaterMark:1,start:index});
-    let array = [];
-    let count = 5;
-    let data ="";
-    readStream.on('data',function(ele){
-        if(ele=='{'){
-            array.push('{');
-            data+=ele;
-        }
-        else if(ele == '}'){
-            data+=ele;
-            array.pop();
-            if(array.length == 0){
-                count--;
-            }
-            if(count == 0){
-                readStream.close(function(){
-                   req.session.index += data.length+1;
-                //    console.log(req.session.index);
-                   display(data,callback);
-                });
-                
-            }
-        }else{
-            data+=ele;
-            // console.log(data.length);
-        }
-    });
-    readStream.on('end',function(){
-        if(count!=0){
-            req.session.index = -1;
-            display(data,callback);
-        }
-    })
-}
-
-
-
-function display(data,callback){
-    if(data[0]!='['){
-        data = '['+data;
-    }
-    if(data[data.length-1]!=']'){
-        data+=']';
-    }
-    data = JSON.parse(data);
-    callback(data);
-}
 app.listen(process.env.PORT,process.env.HOSTNAME,function(){
     console.log(`server running at http://${process.env.HOSTNAME}:${process.env.PORT}`);
 });
+
+
+// * Done upto Hear
+
+// function deletElement(id){
+// //     return db.collection('product').deleteOne({id});
+// // }
+
+// function readFile(path,callback){
+//     fs.readFile(path,'utf8',function(err,data){
+//         callback(err,data)
+//     })
+// }
+
+// function writeFile(path,string,callback){
+//     fs.writeFile(path,string,'utf8',function(err){
+//         callback(err);
+//     })
+// }
+
+// function readFileStream(path,callback,req){
+//     let index = req.session.index;
+//     let readStream = fs.createReadStream(path,{encoding:"ascii",highWaterMark:1,start:index});
+//     let array = [];
+//     let count = 5;
+//     let data ="";
+//     readStream.on('data',function(ele){
+//         if(ele=='{'){
+//             array.push('{');
+//             data+=ele;
+//         }
+//         else if(ele == '}'){
+//             data+=ele;
+//             array.pop();
+//             if(array.length == 0){
+//                 count--;
+//             }
+//             if(count == 0){
+//                 readStream.close(function(){
+//                    req.session.index += data.length+1;
+//                 //    console.log(req.session.index);
+//                    display(data,callback);
+//                 });
+                
+//             }
+//         }else{
+//             data+=ele;
+//             // console.log(data.length);
+//         }
+//     });
+//     readStream.on('end',function(){
+//         if(count!=0){
+//             req.session.index = -1;
+//             display(data,callback);
+//         }
+//     })
+// }
+
+
+
+// function display(data,callback){
+//     if(data[0]!='['){
+//         data = '['+data;
+//     }
+//     if(data[data.length-1]!=']'){
+//         data+=']';
+//     }
+//     data = JSON.parse(data);
+//     callback(data);
+// }
+
 
 
 
@@ -719,29 +770,10 @@ app.listen(process.env.PORT,process.env.HOSTNAME,function(){
 
 
 
-
-
-//TODO:  Check and remove this code
 // async function quantityElement(userName,pid){
 //     let cart = await db.collection('cart').findOne({'userName':userName});
 //     return cart.product[pid].quantity;
 // }
 
 
-async function addProduct(obj){
-    //TODO: Remove This Dependency;
-    let finalObj = {}
-    finalObj.id = crypto.randomBytes(7).toString('hex');
-    finalObj.title = obj.title;
-    let tagArray = obj.tags.split(' ');
-    finalObj.date = obj.date;
-    finalObj.tag = tagArray;
-    finalObj.status = obj.status;
-    finalObj.userReviews = obj.userReviews;
-    finalObj.img = obj.imgSrc;
-    finalObj.stock = obj.stock;
-    finalObj['about-game'] = obj.about;
-    console.log(finalObj);
-    return await db.collection('product').insertOne(finalObj)
-}
 
