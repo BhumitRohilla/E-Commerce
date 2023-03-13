@@ -198,11 +198,7 @@
     background: radial-gradient(ellipse at top, #32353b, transparent), radial-gradient(ellipse at bottom, #32353b, transparent);
 }
 
-.item-container{
-    background-color: black;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
+
 
 .inner-item-container{
     height: fit-content;
@@ -227,17 +223,4 @@
 
 }
 
-.item-plus,.item-minus{
-    margin: 10px;
-    width: 45%;
-    box-sizing: border-box;
-    border: none;
-    height: 40px;
-}
 
-.item-plus{
-    background-color: green;
-}
-.item-minus{
-    background-color: red;
-}

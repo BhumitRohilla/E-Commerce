@@ -1,11 +1,12 @@
 <div id="<%=item.id%>" class='inner-item-container'>
-    <h2 class="item-title"><%= item.title %></h2>
     <div class="item-img-container">
         <img class="item-img" src="/image/product/<%=item.img %>">
     </div>
+    <h2 class="item-title"><%= item.title %></h2>
     <div class="footer-cluster">
-            <button onclick="increaseQuantity('<%=item.id%>')" class="item-plus">+</button>
-            <button onclick="decreaseQuantity('<%=item.id%>')" class="item-minus">-</button>
+        <button onclick="increaseQuantity('<%=item.id%>')" class="item-plus item-btn">Add More</button>
+        <button onclick="decreaseQuantity('<%=item.id%>')" class="item-minus item-btn">Remove One</button>
+        <button onclick="deleteFromCart('<%=item.id%>')" class="item-delete item-btn">Remove</button>
         <span class="item-quantity"><%=item.quantity %></span>
     </div>
 </div>

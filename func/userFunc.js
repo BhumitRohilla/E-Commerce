@@ -33,8 +33,11 @@ async function insertUser(user,db){
 }
 
 
-async function updateUser(filter,output,db){
+function updateUser(filter,output,db){
     return dbFunc.updateOne(db,collection,filter,output)
 }
+
+
+
 
 module.exports = {checkUser,getUser,insertUser,updateUser};

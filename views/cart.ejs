@@ -12,7 +12,7 @@
     <%- include('partials/header',({"user":userName})); %>
     <div class="main-container">
         <h1 class="title">Cart</h1>
-
+        <br>
         <div class="item-container">
             <% for(key in items){%>
                 <%- include('partials/cartItem',({"item":items[key]}))%>

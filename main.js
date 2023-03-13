@@ -15,7 +15,7 @@ const path = require('path');
 const {MongoClient} = require('mongodb');
 const {checkUser,getUser,insertUser,updateUser} = require('./func/userFunc');
 const {getProducts,getSingleProduct,decreaseOneStock,getAllProduct,addProduct,updateProduct,deleteSingleProduct} = require('./func/productFunc');
-const {getQuantity,addToCart,removeFromCart,getUserCart,getUserCartItem} = require('./func/cartFunction');
+const {getQuantity,addToCart,removeFromCart,getUserCart,getUserCartItem,deleteFromCart} = require('./func/cartFunction');
 
 app.set('view engine','ejs');
 app.use(express.static('public'));
@@ -46,9 +46,9 @@ client.connect()
 
 
 app.get('/',(req,res)=>{
-    //TODO: Home Page
+    //TODO: Home Page UI
     if(req.session.user)
-    res.render('root',{'user': req.session.user && req.session.user.userName});
+        res.render('root',{'user': req.session.user && req.session.user.userName});
     else{
         res.render('root',{'user': undefined});
     }
@@ -160,13 +160,15 @@ app.route('/changePassword')
     let {password} = req.body;
     let user = req.session.user;
 
- //TODO: Make a function for this
-    db.collection('users').updateOne({"userName":user.userName,"email":user.email},{$set:{password}})
+ //TODO: Remove Dependency
+    // db.collection('users').updateOne({"userName":user.userName,"email":user.email},{$set:{}})
+    updateUser({"userName":user.userName,"email":user.email},{password},db)
     .then(function(data){
+        //TODO: Lower priority move it into it's own function
         sendMail(user,"Password Change","Info Board","<h1>Password Change</h1><p>Your password has been changed</p>",function(){
             res.statusCode = 200;
             req.session.destroy();
-            res.setHeader('Content-Type','application/JSON');
+            res.setHeader('Content-Type','text/plain');
             res.send();
         })
     })
@@ -458,7 +460,22 @@ app.get('/removeProduct/:pid',async (req,res)=>{
 
 
 
-
+app.get('/deleteProduct/:pid',async (req,res)=>{
+    let {pid} = req.params;
+    
+    deleteFromCart(pid,req.session.user.userName,db)
+    .then(function(){
+        res.statusCode = 201;
+        res.setHeader('Content-Type','text/plain');
+        res.send();
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.statusCode = 404;
+        res.setHeader('Content-Type','text/plain');
+        res.send();
+    })
+})
 
 
 app.route('/myCart')
@@ -506,7 +523,7 @@ app.route('/adminDashboard/addNewProduct')
     res.render('newProductPage');
 })
 .post(adminAuth,upload.single("product-img")  ,async (req,res)=>{
-    console.log(req.body);
+    // console.log(req.body);
     let obj = {};
     
     if(req.file.size > 256000){
@@ -518,7 +535,7 @@ app.route('/adminDashboard/addNewProduct')
         obj = {title,tags,date,status,userReviews,stock,about};
         obj.imgSrc = req.file.filename;
         // TODO: Implement check here checkInput(obj);
-        console.log(req.file);
+        // console.log(req.file);
         try{
             obj.id = crypto.randomBytes(7).toString('hex');
             await addProduct(obj,db);
@@ -543,7 +560,6 @@ app.route('/adminDashboard/addNewProduct')
 app.route('/adminDashboard/updateProduct/:pid')
 .get(adminAuth,async (req,res)=>{
     let {pid} = req.params;
-    //TODO: Move This Into a function
     let item;
     try{
         item = await getSingleProduct(pid,db);
@@ -601,7 +617,6 @@ app.route('/adminDashboard/updateProduct/:pid')
         }
 
         if(updated){
-            //TODO: Move This into code;
             // db.collection('product').updateOne({"id":item.id},{$set:item})
             updateProduct(pid,item,db)
             .then(function(){

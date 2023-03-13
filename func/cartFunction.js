@@ -1,4 +1,4 @@
-let {findOne, insertOne, updateOne, removePropertyFromAll} = require('./dbFunction');
+let {findOne, insertOne, updateOne, removePropertyFromAll, removeProperty} = require('./dbFunction');
 
 let {increaseOneStock,getAllProduct} = require('./productFunc');
 
@@ -10,7 +10,7 @@ async function getQuantity(pid,userName,db){
     try{
         // data = await findOne(db,collection,{userName});
         data = await getUserCart(userName,db);
-        console.log(data);
+        // console.log(data);
     }
     catch(err){
         throw err;
@@ -21,7 +21,7 @@ async function getQuantity(pid,userName,db){
     }else{
         try{
             quantity = data.product[pid].quantity;
-            console.log(quantity);
+            // console.log(quantity);
         }
         catch(err){
             console.log(err);
@@ -133,4 +133,11 @@ function deleteProductFromCartWhichAreDeletedByAdmin(db,key){
     removePropertyFromAll(db,collection,{},{[propertyToDelete]:1});
 }
 
-module.exports = {getQuantity,addToCart,removeFromCart,getUserCart,getUserCartItem};
+
+function deleteFromCart(pid,userName,db){
+    let propetyToDelete = "product."+pid;
+    // db.collection().updateOne({"id":pid},{$unset:{propetyToDelete}});
+    return removeProperty(db,collection,{userName},{[propetyToDelete]:1});
+}
+
+module.exports = {getQuantity,addToCart,removeFromCart,getUserCart,getUserCartItem,deleteFromCart};

@@ -26,9 +26,13 @@ function removePropertyFromAll(db,collection,filter,data){
     return db.collection(collection).updateMany(filter,{$unset:data});
 }
 
+function removeProperty(db,collection,filter,data){
+    return db.collection(collection).updateOne(filter,{$unset:data});
+}
+
 
 function deleteOne(db,collection,filter){
     return db.collection(collection).deleteOne(filter); 
 }
 
-module.exports = {findAll,findOne,insertOne,updateOne,findAllWithSkip,updateMany,removePropertyFromAll,deleteOne};
+module.exports = {findAll,findOne,insertOne,updateOne,findAllWithSkip,updateMany,removePropertyFromAll,deleteOne,removeProperty};
