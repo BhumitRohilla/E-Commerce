@@ -396,7 +396,7 @@ app.get('/buyProduct/:pid',async (req,res)=>{
         res.send();
         return ;
     }
-    if(stock > 1){
+    if(stock > 0){
         res.statusCode = 201;
         try{
             addToCart(pid,req.session.user.userName,db);

@@ -68,3 +68,17 @@ body{
 h1{
     text-align: center;
 }
+
+@media screen  and (max-width: 530px){
+    .item-container{
+        grid-template-columns: auto;
+    }
+    .inner-item-container{
+        box-sizing: border-box;
+        width: 100%;
+    }
+    img{
+        width: 100%;
+        height: auto;
+    }
+}
