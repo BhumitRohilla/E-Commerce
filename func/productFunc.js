@@ -95,7 +95,7 @@ async function addProduct(obj,db){
 
 function updateProduct(pid,data,db){
     // db.collection().
-    return updateOne(db,{"id":pid},data);
+    return updateOne(db,collection,{"id":pid},data);
 }
 
 function deleteSingleProduct(pid,db){

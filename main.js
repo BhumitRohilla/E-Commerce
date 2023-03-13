@@ -160,7 +160,6 @@ app.route('/changePassword')
     let {password} = req.body;
     let user = req.session.user;
 
- //TODO: Remove Dependency
     // db.collection('users').updateOne({"userName":user.userName,"email":user.email},{$set:{}})
     updateUser({"userName":user.userName,"email":user.email},{password},db)
     .then(function(data){
@@ -397,7 +396,6 @@ app.get('/buyProduct/:pid',async (req,res)=>{
         res.send();
         return ;
     }
-     
     if(stock > 1){
         res.statusCode = 201;
         try{
@@ -535,15 +533,21 @@ app.route('/adminDashboard/addNewProduct')
         obj = {title,tags,date,status,userReviews,stock,about};
         obj.imgSrc = req.file.filename;
         // TODO: Implement check here checkInput(obj);
-        // console.log(req.file);
-        try{
-            obj.id = crypto.randomBytes(7).toString('hex');
-            await addProduct(obj,db);
-            res.statusCode = 200;
-        }
-        catch(err){
-            console.log(err);
+        let isValid = checkProductValues(obj);
+        if(!isValid){
             res.statusCode = 404;
+        }
+        // console.log(req.file);
+        else{
+            try{
+                obj.id = crypto.randomBytes(7).toString('hex');
+                await addProduct(obj,db);
+                res.statusCode = 200;
+            }
+            catch(err){
+                console.log(err);
+                res.statusCode = 404;
+            }
         }
     }
     res.setHeader('Content-Type','text/plain');
@@ -613,7 +617,9 @@ app.route('/adminDashboard/updateProduct/:pid')
             item.img = req.file.filename;
             updated = true;
             // TODO: Low Priority Move It into function;
-            fs.unlink(path.join(__dirname,'/public/image/product',olderFile));
+            fs.unlink(path.join(__dirname,'/public/image/product',olderFile),function(){
+                
+            });
         }
 
         if(updated){
@@ -633,6 +639,7 @@ app.route('/adminDashboard/updateProduct/:pid')
         }
     }
     catch(err){
+        console.log(err);
         res.statusCode = 404;
         res.setHeader('Content-Type','text/plain');
         res.send();
@@ -792,3 +799,13 @@ app.listen(process.env.PORT,process.env.HOSTNAME,function(){
 
 
 
+function checkProductValues(obj){
+    if(obj.title == "" || obj.tag == "" || obj.date == "" || obj.statusProduct == "" || obj.userReviews == "" /*|| price == ""*/ || obj.stock == ""  || obj.about == "" || obj.img == ""){
+        return false;
+    }else if(obj.userReviews < 0 || obj.stock  < 0){
+        alert("Please Enter none negative values");
+        return false;
+    }else{
+        return true;
+    }
+}

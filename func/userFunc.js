@@ -1,9 +1,9 @@
 const dbFunc = require('./dbFunction');
 
 
-// ! Depricated:-
 const collection = 'users';
 
+// ! Depricated:-
 async function checkUser(user,db){
     return dbFunc.findAll(db,collection,user)
 }
@@ -12,6 +12,7 @@ async function checkUser(user,db){
 async function getUser(user,db){
     return dbFunc.findOne(db,collection,user)
 }
+
 
 async function insertUser(user,db){
     let userName = user.userName;
@@ -36,7 +37,6 @@ async function insertUser(user,db){
 function updateUser(filter,output,db){
     return dbFunc.updateOne(db,collection,filter,output)
 }
-
 
 
 
